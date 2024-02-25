@@ -37,9 +37,13 @@ public class AdventureGameGUI {
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                frame.getContentPane().removeAll();  // 移除原有的组件
+                frame.getContentPane().remove(backgroundLabel);
+                frame.revalidate();
+                frame.repaint();
                 // 在按钮点击事件中创建并显示 MapPanel
                 mapPanel = new MapPanel();
-                frame.getContentPane().removeAll();  // 移除原有的组件
+
                 frame.getContentPane().add(mapPanel);  // 将 MapPanel 添加到窗口
                 frame.revalidate();  // 重新布局
                 frame.repaint();  // 重绘窗口

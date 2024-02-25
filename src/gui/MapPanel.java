@@ -12,17 +12,18 @@ public class MapPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
+    
         // 绘制方格
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLUMNS; col++) {
                 int x = col * CELL_SIZE;
                 int y = row * CELL_SIZE;
-
-                g.drawRect(x, y, CELL_SIZE, CELL_SIZE);
+    
+                g.fillRect(x, y, CELL_SIZE, CELL_SIZE);  // 使用 fillRect 填充整个方格
             }
         }
     }
+    
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
