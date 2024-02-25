@@ -1,7 +1,6 @@
 package test;
 
 import game.GameController;
-import gui.BasicGUI;
 
 public class TestAdventureGame {
 

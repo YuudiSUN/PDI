@@ -43,9 +43,7 @@ public class MapPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        if (obstacles == null) {
-            initializeMap();
-        }
+        initializeMap(); // 生成新的随机地图
 
         drawMap(g);
     }
