@@ -38,15 +38,20 @@ public class AdventureGameGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.getContentPane().removeAll();  // 移除原有的组件
-                frame.getContentPane().remove(backgroundLabel);
-                frame.revalidate();
-                frame.repaint();
+
                 // 在按钮点击事件中创建并显示 MapPanel
                 mapPanel = new MapPanel();
 
-                frame.getContentPane().add(mapPanel);  // 将 MapPanel 添加到窗口
-                frame.revalidate();  // 重新布局
-                frame.repaint();  // 重绘窗口
+                // 创建新的 JFrame 来显示游戏地图
+                JFrame gameMapFrame = new JFrame("游戏地图");
+                gameMapFrame.setSize(800, 600);
+                gameMapFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);  // 关闭该窗口时只关闭当前窗口
+
+                // 将 MapPanel 添加到新的 JFrame
+                gameMapFrame.getContentPane().add(mapPanel);
+                gameMapFrame.setLocationRelativeTo(frame);  // 设置相对于主窗口的位置
+                gameMapFrame.setVisible(true);
+
             }
         });
         startButton.setPreferredSize(new Dimension(150, 50));  // 设置按钮大小
