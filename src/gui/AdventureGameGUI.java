@@ -11,8 +11,7 @@ public class AdventureGameGUI {
 
     private JFrame frame;
     private GameController gameController;
-
-    // 可以根据需要添加其他 GUI 组件的引用，例如地图面板、玩家信息面板等
+    private MapPanel mapPanel;  // 添加 MapPanel 的引用
 
     public AdventureGameGUI(GameController gameController) {
         this.gameController = gameController;
@@ -20,7 +19,7 @@ public class AdventureGameGUI {
     }
 
     public void initializeGUI() {
-    	frame = new JFrame("Explorateur");
+        frame = new JFrame("Explorateur");
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -38,7 +37,12 @@ public class AdventureGameGUI {
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(frame, "游戏已开始！");
+                // 在按钮点击事件中创建并显示 MapPanel
+                mapPanel = new MapPanel();
+                frame.getContentPane().removeAll();  // 移除原有的组件
+                frame.getContentPane().add(mapPanel);  // 将 MapPanel 添加到窗口
+                frame.revalidate();  // 重新布局
+                frame.repaint();  // 重绘窗口
             }
         });
         startButton.setPreferredSize(new Dimension(150, 50));  // 设置按钮大小
