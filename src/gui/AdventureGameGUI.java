@@ -1,5 +1,6 @@
 package gui;
 
+import game.Explorer;
 import game.GameController;
 
 import javax.swing.*;
@@ -12,7 +13,7 @@ public class AdventureGameGUI {
     private JFrame frame;
     private GameController gameController;
     private MapPanel mapPanel;  // 添加 MapPanel 的引用
-
+    
     public AdventureGameGUI(GameController gameController) {
         this.gameController = gameController;
         initializeGUI();

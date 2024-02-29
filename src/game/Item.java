@@ -21,7 +21,7 @@ public class Item {
     }
 
     // 玩家与物品发生交互的方法
-    public void interact(Player player) {
+    public void interact(Explorer player) {
         // 在这里定义物品与玩家交互的逻辑
         // 例如：增加玩家的健康值、解锁新区域等
     }

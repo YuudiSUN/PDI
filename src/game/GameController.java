@@ -6,34 +6,36 @@ import utils.GameRules;
 public class GameController {
 
     private GameMap gameMap;
-    private Player player;
+    private Explorer explorer;
     private AdventureGameGUI gameGUI;
 
     public GameController() {
         // 初始化游戏地图和玩家
         this.gameMap = new GameMap(null, null, null);
-        this.player = new Player(null, 0, 0, 0, 0);
+        this.explorer = new Explorer(null, 0, 0, 0, 0);
     }
 
     public void initializeGame() {
-        // 在这里初始化游戏地图、敌人、物品等
-        // 例如：gameMap.initialize();
-        //      player.initialize();
+        // Initialize the game map, enemies, items, etc. 
+        explorer.setName("Explorer1");
+        explorer.setHealth(100); 
+        explorer.setDamage(10); 
+        explorer.setPosition(1, 1); 
     }
 
     public void startGame() {
-        // 显示游戏图形用户界面
+    	// GUI
         this.gameGUI = new AdventureGameGUI(this);
 
         // 游戏循环
-        while (!GameRules.isGameOver(player)) {
+        while (!GameRules.isGameOver(explorer)) {
             // 处理玩家输入
             handleInput();
 
             // 更新游戏状态
             updateGame();
 
-            // 更新图形用户界面
+            // Update GUI
             gameGUI.updateGUI();
         }
 
@@ -43,13 +45,13 @@ public class GameController {
 
     private void handleInput() {
         // 处理玩家输入的逻辑
-        // 例如：player.move(direction);
+        // 例如：explorer.move(direction);
     }
 
     private void updateGame() {
         // 更新游戏状态的逻辑
         // 例如：gameMap.update();
-        //      player.update();
+        //      explorer.update();
     }
 
     private void handleGameOver() {
