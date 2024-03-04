@@ -8,6 +8,7 @@ import java.io.IOException;
 
 // 引入地图类
 import gui.Map;
+import gui.TeamConfig;
 
 
 public class Interface extends JFrame {
@@ -39,15 +40,14 @@ public class Interface extends JFrame {
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    // 创建地图对象并显示
-                    Map map = new Map();
-                    map.setVisible(true);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+                // 隐藏当前窗口
+                Interface.this.setVisible(false); // 或者 Interface.this.dispose(); 根据需求选择
+                
+                // 打开配置队伍的窗口
+                new TeamConfig();
             }
         });
+
 
         exitButton = new JButton("");
         exitButton.setBounds(368, 177, 100, 50); // 设置按钮位置和大小
