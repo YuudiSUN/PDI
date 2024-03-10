@@ -1,10 +1,13 @@
 package gui;
 
-import utils.MapGenerator;
-import utils.MapElement;
+import utils.*;
 import utils.entities.*;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
+import status.*;
+
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -23,7 +26,7 @@ public class Map extends JFrame {
     private java.util.List<Fox> foxes;
     private java.util.List<Tiger> tigers;
     private Dragon dragon;
-
+    private TeamStatusDisplay teamStatusDisplay; 
 
     public Map() throws IOException {
         setTitle("Treasure Hunter");
@@ -110,6 +113,23 @@ public class Map extends JFrame {
             return maps;
         }
     }
+    public void checkCollisions() {
+        for (CharacterStatus adventurer : TeamStatus.getMembers()) { // 确保你是从正确的实例或类访问成员列表
+            for (Tiger tiger : tigers) {
+                if (adventurer.getPosition().equals(tiger.getPosition())) {
+                    int damage = adventurer.hasArmor() ? 10 : 20; // 如果有护甲，损失10生命值，否则20
+                    adventurer.setHealth(adventurer.getHealth() - damage);
+                    if (adventurer.getHealth() <= 0) {
+                        // 处理冒险者生命值降至0或以下的情况
+                        JOptionPane.showMessageDialog(null, adventurer.getName() + " has been defeated by a tiger!"); // 确保正确使用JOptionPane
+                    }
+                }
+            }
+        }
+        // 更新显示，假设teamStatusDisplay是TeamStatusDisplay实例的变量名
+        teamStatusDisplay.updateDisplay();
+    }
+
 
     private class KeyMonitor extends KeyAdapter {
         @Override
