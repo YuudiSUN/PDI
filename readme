@@ -1,7 +1,9 @@
 注意：Interface.java,Map.java中要替换地图地址
 在TestGame.java中启动游戏
 
-
+##这次更新
+优化map生成，分为mapgenerator和mapelement文件
+关联冒险者和地图
 ##待解决：
 1.game包
     多线程
@@ -10,7 +12,9 @@
     探险规则配置123
     详细人物规则
     详细队伍配置
+    龙在宝藏边
 3.status
+
 
 
 

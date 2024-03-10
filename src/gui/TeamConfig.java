@@ -11,7 +11,7 @@ public class TeamConfig extends JFrame {
     private JLabel budgetLabel;
     private JButton addMemberButton, addPotionButton, enterMapButton, addWeaponButton, addArmorButton;
     private JComboBox<String> strategyComboBox;
-    private int teamMembers = 0;
+    private static int teamMembers = 0;
     private int potions = 0;
     private boolean hasWeapon = false, hasArmor = false;
     private TeamStatus teamStatus = new TeamStatus();
@@ -111,4 +111,9 @@ public class TeamConfig extends JFrame {
     public static void main(String[] args) {
         new TeamConfig();
     }
+
+	public static int getAdventurersCount() {
+		// TODO Auto-generated method stub
+		return teamMembers;
+	}
 }
