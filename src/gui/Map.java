@@ -78,47 +78,68 @@ public class Map extends JFrame {
         }
 
         private void startAdventurersMovement() {
-            new Thread(() -> {
-                while (!gameEnded) {
-                    moveAdventurers();
-                    try {
-                        Thread.sleep(100); // 将每次移动的时间间隔调整为0.1秒
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+            for (int i = 0; i < adventurers.length; i++) {
+                final int index = i;
+                new Thread(() -> {
+                    while (!gameEnded) {
+                        moveAdventurer(index);
+                        try {
+                            Thread.sleep(500); // 每个冒险者的移动间隔仍然为0.5秒
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
-            }).start();
+                }).start();
+            }
         }
 
 
-        private void moveAdventurers() {
+
+        private void moveAdventurer(int index) {
             Point treasurePosition = findTreasurePosition(); // 获取宝藏位置
-            for (Point adventurer : adventurers) {
-                int newX = adventurer.x, newY = adventurer.y;
-                if (treasurePosition != null) {
-                    // 计算朝着宝藏方向的增量
-                    int deltaX = Integer.compare(treasurePosition.x, adventurer.x);
-                    int deltaY = Integer.compare(treasurePosition.y, adventurer.y);
-                    // 根据增量决定移动方向，优先朝着宝藏方向移动
-                    if (Math.random() < 0.5) {
-                        newX += deltaX;
-                        if (isValidMove(newX, newY)) {
-                            adventurer.x = newX;
-                        }
-                    } else {
+            Point adventurer = adventurers[index];
+            int newX = adventurer.x, newY = adventurer.y;
+            if (treasurePosition != null) {
+                // 计算朝着宝藏方向的增量
+                int deltaX = Integer.compare(treasurePosition.x, adventurer.x);
+                int deltaY = Integer.compare(treasurePosition.y, adventurer.y);
+                // 尝试朝着宝藏方向移动
+                if (Math.random() < 0.5) {
+                    newX += deltaX;
+                    // 如果移动后越界或遇到障碍物，则尝试回退一步并尝试新的方向
+                    if (!isValidMove(newX, newY)) {
+                        newX -= deltaX;
                         newY += deltaY;
-                        if (isValidMove(newX, newY)) {
-                            adventurer.y = newY;
+                        if (!isValidMove(newX, newY)) {
+                            newY -= deltaY;
+                            newX -= deltaX;
                         }
                     }
-                    if (newX == treasurePosition.x && newY == treasurePosition.y) {
-                        JOptionPane.showMessageDialog(this, "Congratulations! You found the treasure!");
-                        gameEnded = true; // 游戏结束
+                } else {
+                    newY += deltaY;
+                    // 如果移动后越界或遇到障碍物，则尝试回退一步并尝试新的方向
+                    if (!isValidMove(newX, newY)) {
+                        newY -= deltaY;
+                        newX += deltaX;
+                        if (!isValidMove(newX, newY)) {
+                            newX -= deltaX;
+                            newY -= deltaY;
+                        }
                     }
                 }
+                // 如果冒险者到达了宝藏位置，则显示消息
+                if (newX == treasurePosition.x && newY == treasurePosition.y) {
+                    JOptionPane.showMessageDialog(this, "Congratulations! You found the treasure!");
+                    gameEnded = true; // 游戏结束
+                }
+                // 更新冒险者位置
+                adventurer.setLocation(newX, newY);
             }
+            // 重新绘制地图
             repaint();
         }
+
+
 
         private boolean isValidMove(int x, int y) {
             if (x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_HEIGHT ||
@@ -186,7 +207,7 @@ public class Map extends JFrame {
                     adventurer.setHealth(adventurer.getHealth() - damage);
                     if (adventurer.getHealth() <= 0) {
                         // 处理冒险者生命值降至0或以下的情况
-                        JOptionPane.showMessageDialog(null, adventurer.getName() + " has been defeated by a tiger!"); // 确保正确使用JOptionPane
+                        JOptionPane.showMessageDialog(null, adventurer.getName() + " has been defeated by a tiger!"); 
                     }
                 }
             }
