@@ -102,15 +102,13 @@ public class Map extends JFrame {
                     // 根据增量决定移动方向，优先朝着宝藏方向移动
                     if (Math.random() < 0.5) {
                         newX += deltaX;
-                        if (newX < 0 || newX >= MAP_WIDTH || maps[newY][newX] == MapElement.MOUNTAIN.getValue() ||
-                            maps[newY][newX] == MapElement.MARSHLAND.getValue()) {
-                            newX -= deltaX; // 如果移动后越界或遇到障碍物，则取消移动
+                        if (isValidMove(newX, newY)) {
+                            adventurer.x = newX;
                         }
                     } else {
                         newY += deltaY;
-                        if (newY < 0 || newY >= MAP_HEIGHT || maps[newY][newX] == MapElement.MOUNTAIN.getValue() ||
-                            maps[newY][newX] == MapElement.MARSHLAND.getValue()) {
-                            newY -= deltaY; // 如果移动后越界或遇到障碍物，则取消移动
+                        if (isValidMove(newX, newY)) {
+                            adventurer.y = newY;
                         }
                     }
                     // 如果冒险者到达了宝藏位置，则显示消息
@@ -119,11 +117,18 @@ public class Map extends JFrame {
                         gameEnded = true; // 游戏结束
                     }
                 }
-                // 更新冒险者位置
-                adventurer.setLocation(newX, newY);
             }
             // 重新绘制地图
             repaint();
+        }
+
+        private boolean isValidMove(int x, int y) {
+            if (x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_HEIGHT ||
+                maps[y][x] == MapElement.MOUNTAIN.getValue() ||
+                maps[y][x] == MapElement.MARSHLAND.getValue()) {
+                return false; // 如果移动后越界或遇到障碍物，则移动无效
+            }
+            return true;
         }
 
         private Point findTreasurePosition() {
