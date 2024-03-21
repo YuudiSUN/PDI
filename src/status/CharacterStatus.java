@@ -1,15 +1,17 @@
 package status;
 
-import java.awt.Point; // 导入 Point 类
+import java.awt.Point;
+import utils.entities.GameEntity;
 
-public class CharacterStatus {
+public class CharacterStatus extends GameEntity {
     private String name;
     private int health;
     private boolean hasWeapon;
     private boolean hasArmor;
-    private Point position; // 添加位置属性
-    // 构造器
-    public CharacterStatus(String name, int health, boolean hasWeapon, boolean hasArmor) {
+
+    // 构造函数
+    public CharacterStatus(String name, int health, boolean hasWeapon, boolean hasArmor, Point position) {
+        super(position, "src/image/character.png"); // 假设所有角色使用同一张图片
         this.name = name;
         this.health = health;
         this.hasWeapon = hasWeapon;
@@ -25,12 +27,12 @@ public class CharacterStatus {
         this.name = name;
     }
 
+    public int getHealth() {
+        return health;
+    }
 
     public void setHealth(int health) {
         this.health = health;
-    }
-    public int getHealth() {
-        return health;
     }
 
     public boolean hasWeapon() {
@@ -40,21 +42,14 @@ public class CharacterStatus {
     public void setHasWeapon(boolean hasWeapon) {
         this.hasWeapon = hasWeapon;
     }
-    
 
-    // 为 hasArmor 添加 getter 方法
     public boolean hasArmor() {
         return hasArmor;
     }
-    public Point getPosition() {
-        return position;
-    }
 
-    public void setPosition(Point position) {
-        this.position = position;
-    }
     public void setHasArmor(boolean hasArmor) {
         this.hasArmor = hasArmor;
     }
 
+    // 你可以在这里添加角色特有的其他方法
 }
