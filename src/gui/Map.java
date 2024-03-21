@@ -13,6 +13,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class Map extends JFrame {
     private static final long serialVersionUID = 1L;
@@ -28,6 +30,7 @@ public class Map extends JFrame {
     private Dragon dragon;
     private TeamStatusDisplay teamStatusDisplay; 
 
+
     public Map() throws IOException {
         setTitle("Treasure Hunter");
         mapPanel = new MapPanel();
@@ -37,6 +40,7 @@ public class Map extends JFrame {
         addKeyListener(new KeyMonitor());
         add(mapPanel);
         setVisible(true);
+        
     }
 
     private class MapPanel extends JPanel {
@@ -84,7 +88,7 @@ public class Map extends JFrame {
                     while (!gameEnded) {
                         moveAdventurer(index);
                         try {
-                            Thread.sleep(500); // 每个冒险者的移动间隔仍然为0.5秒
+                            Thread.sleep(500); // 每个冒险者的移动间隔
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -93,37 +97,48 @@ public class Map extends JFrame {
             }
         }
 
-
-
         private void moveAdventurer(int index) {
             Point treasurePosition = findTreasurePosition(); // 获取宝藏位置
             Point adventurer = adventurers[index];
             int newX = adventurer.x, newY = adventurer.y;
+            int tries = 0; // 记录尝试移动的次数
             if (treasurePosition != null) {
                 // 计算朝着宝藏方向的增量
                 int deltaX = Integer.compare(treasurePosition.x, adventurer.x);
                 int deltaY = Integer.compare(treasurePosition.y, adventurer.y);
                 // 尝试朝着宝藏方向移动
-                if (Math.random() < 0.5) {
-                    newX += deltaX;
-                    // 如果移动后越界或遇到障碍物，则尝试回退一步并尝试新的方向
-                    if (!isValidMove(newX, newY)) {
-                        newX -= deltaX;
-                        newY += deltaY;
-                        if (!isValidMove(newX, newY)) {
-                            newY -= deltaY;
-                            newX -= deltaX;
-                        }
-                    }
-                } else {
-                    newY += deltaY;
-                    // 如果移动后越界或遇到障碍物，则尝试回退一步并尝试新的方向
-                    if (!isValidMove(newX, newY)) {
-                        newY -= deltaY;
+                while (tries < 3) { // 在同一位置最多尝试三次
+                    if (Math.random() < 0.5) {
                         newX += deltaX;
-                        if (!isValidMove(newX, newY)) {
-                            newX -= deltaX;
-                            newY -= deltaY;
+                        if (isValidMove(newX, newY) && !isOccupied(newX, newY)) {
+                            break; // 移动成功，跳出循环
+                        }
+                        newX -= deltaX; // 移动失败，恢复位置
+                    } else {
+                        newY += deltaY;
+                        if (isValidMove(newX, newY) && !isOccupied(newX, newY)) {
+                            break; // 移动成功，跳出循环
+                        }
+                        newY -= deltaY; // 移动失败，恢复位置
+                    }
+                    tries++; // 增加尝试次数
+                }
+                // 如果尝试了三次仍然无法移动，则随机选择一个新的方向
+                if (tries == 3) {
+                    int[] directions = {0, 1, 2, 3}; // 0: 上, 1: 下, 2: 左, 3: 右
+                    Collections.shuffle(Arrays.asList(directions)); // 随机打乱方向数组
+                    for (int dir : directions) {
+                        if (dir == 0) { // 上
+                            newY = adventurer.y - 1;
+                        } else if (dir == 1) { // 下
+                            newY = adventurer.y + 1;
+                        } else if (dir == 2) { // 左
+                            newX = adventurer.x - 1;
+                        } else { // 右
+                            newX = adventurer.x + 1;
+                        }
+                        if (isValidMove(newX, newY) && !isOccupied(newX, newY)) {
+                            break; // 移动成功，跳出循环
                         }
                     }
                 }
@@ -139,7 +154,15 @@ public class Map extends JFrame {
             repaint();
         }
 
-
+        private boolean isOccupied(int x, int y) {
+            for (Point adventurer : adventurers) {
+                int index = 0;
+				if (adventurer != adventurers[index] && adventurer.x == x && adventurer.y == y) {
+                    return true; // 目标位置已经被其他冒险者占据
+                }
+            }
+            return false;
+        }
 
         private boolean isValidMove(int x, int y) {
             if (x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_HEIGHT ||
