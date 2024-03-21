@@ -40,15 +40,16 @@ public class Map extends JFrame {
     }
 
     private class MapPanel extends JPanel {
-        private Integer[][] maps = MapGenerator.generateMap(); // 使用 MapGenerator 生成地图
-        private Point[] adventurers; // 存储冒险者的位置
+        private Integer[][] maps = MapGenerator.generateMap();
+        private Point[] adventurers;
         private Image playerImage;
         private Image[] terrainImages = new Image[7];
 
         public MapPanel() throws IOException {
-            loadImages(); // 加载所有图像
-            loadEntities(); // 加载所有实体
-            initializeAdventurers(TeamConfig.getAdventurersCount()); // 根据 TeamConfig 初始化冒险者位置
+            loadImages();
+            loadEntities();
+            initializeAdventurers(TeamConfig.getAdventurersCount());
+            startAdventurersMovement();
         }
 
         private void loadImages() throws IOException {
@@ -61,17 +62,53 @@ public class Map extends JFrame {
             terrainImages[MapElement.MARSHLAND.getValue() - 1] = ImageIO.read(new File("src/image/marshland.png"));
             terrainImages[MapElement.TREASURE.getValue() - 1] = ImageIO.read(new File("src/image/treasure.png"));
         }
+
         private void loadEntities() throws IOException {
-            bears = EntityLoader.loadBears(5); // Load 5 bears as an example
-            foxes = EntityLoader.loadFoxes(3); // Load 3 foxes
-            tigers = EntityLoader.loadTigers(2); // Load 2 tigers
-            dragon = EntityLoader.loadDragon(); // Load the dragon
+            bears = EntityLoader.loadBears(5);
+            foxes = EntityLoader.loadFoxes(3);
+            tigers = EntityLoader.loadTigers(2);
+            dragon = EntityLoader.loadDragon();
         }
+
         private void initializeAdventurers(int count) {
             adventurers = new Point[count];
             for (int i = 0; i < count; i++) {
-                adventurers[i] = new Point(0, MAP_HEIGHT - 1); // 假设所有冒险者开始时都位于地图左下角
+                adventurers[i] = new Point(0, MAP_HEIGHT - 1);
             }
+        }
+
+        private void startAdventurersMovement() {
+            new Thread(() -> {
+                while (!gameEnded) {
+                    moveAdventurers();
+                    try {
+                        Thread.sleep(100); // 将每次移动的时间间隔调整为0.5秒，可以根据需要进行调整
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
+
+
+        private void moveAdventurers() {
+            for (Point adventurer : adventurers) {
+                int direction = (int) (Math.random() * 4);
+                int newX = adventurer.x, newY = adventurer.y;
+                switch (direction) {
+                    case 0: newY--; break;
+                    case 1: newY++; break;
+                    case 2: newX--; break;
+                    case 3: newX++; break;
+                }
+                Integer[][] maps = getMaps();
+                if (newX >= 0 && newX < MAP_WIDTH && newY >= 0 && newY < MAP_HEIGHT &&
+                    maps[newY][newX] != MapElement.MOUNTAIN.getValue() &&
+                    maps[newY][newX] != MapElement.MARSHLAND.getValue()) {
+                    adventurer.move(newX, newY);
+                }
+            }
+            repaint();
         }
 
         @Override
@@ -86,15 +123,12 @@ public class Map extends JFrame {
             for (Point point : adventurers) {
                 g.drawImage(playerImage, point.x * BLOCK_WIDTH, point.y * BLOCK_HEIGHT, this);
             }
-            // Draw all bears
             for (Bear bear : bears) {
                 g.drawImage(bear.getImage(), bear.getPosition().x * BLOCK_WIDTH, bear.getPosition().y * BLOCK_HEIGHT + 30, this);
             }
-            // Draw all foxes
             for (Fox fox : foxes) {
                 g.drawImage(fox.getImage(), fox.getPosition().x * BLOCK_WIDTH, fox.getPosition().y * BLOCK_HEIGHT + 30, this);
             }
-            // Draw all tigers
             for (Tiger tiger : tigers) {
                 g.drawImage(tiger.getImage(), tiger.getPosition().x * BLOCK_WIDTH, tiger.getPosition().y * BLOCK_HEIGHT + 30, this);
             }
@@ -113,6 +147,7 @@ public class Map extends JFrame {
             return maps;
         }
     }
+
     public void checkCollisions() {
         for (CharacterStatus adventurer : TeamStatus.getMembers()) { // 确保你是从正确的实例或类访问成员列表
             for (Tiger tiger : tigers) {
