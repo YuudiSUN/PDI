@@ -92,23 +92,49 @@ public class Map extends JFrame {
 
 
         private void moveAdventurers() {
+            Point treasurePosition = findTreasurePosition(); // 获取宝藏位置
             for (Point adventurer : adventurers) {
-                int direction = (int) (Math.random() * 4);
                 int newX = adventurer.x, newY = adventurer.y;
-                switch (direction) {
-                    case 0: newY--; break;
-                    case 1: newY++; break;
-                    case 2: newX--; break;
-                    case 3: newX++; break;
+                if (treasurePosition != null) {
+                    // 计算朝着宝藏方向的增量
+                    int deltaX = Integer.compare(treasurePosition.x, adventurer.x);
+                    int deltaY = Integer.compare(treasurePosition.y, adventurer.y);
+                    // 根据增量决定移动方向，优先朝着宝藏方向移动
+                    if (Math.random() < 0.5) {
+                        newX += deltaX;
+                        if (newX < 0 || newX >= MAP_WIDTH || maps[newY][newX] == MapElement.MOUNTAIN.getValue() ||
+                            maps[newY][newX] == MapElement.MARSHLAND.getValue()) {
+                            newX -= deltaX; // 如果移动后越界或遇到障碍物，则取消移动
+                        }
+                    } else {
+                        newY += deltaY;
+                        if (newY < 0 || newY >= MAP_HEIGHT || maps[newY][newX] == MapElement.MOUNTAIN.getValue() ||
+                            maps[newY][newX] == MapElement.MARSHLAND.getValue()) {
+                            newY -= deltaY; // 如果移动后越界或遇到障碍物，则取消移动
+                        }
+                    }
+                    // 如果冒险者到达了宝藏位置，则显示消息
+                    if (newX == treasurePosition.x && newY == treasurePosition.y) {
+                        JOptionPane.showMessageDialog(this, "Congratulations! You found the treasure!");
+                        gameEnded = true; // 游戏结束
+                    }
                 }
-                Integer[][] maps = getMaps();
-                if (newX >= 0 && newX < MAP_WIDTH && newY >= 0 && newY < MAP_HEIGHT &&
-                    maps[newY][newX] != MapElement.MOUNTAIN.getValue() &&
-                    maps[newY][newX] != MapElement.MARSHLAND.getValue()) {
-                    adventurer.move(newX, newY);
+                // 更新冒险者位置
+                adventurer.setLocation(newX, newY);
+            }
+            // 重新绘制地图
+            repaint();
+        }
+
+        private Point findTreasurePosition() {
+            for (int i = 0; i < MAP_HEIGHT; i++) {
+                for (int j = 0; j < MAP_WIDTH; j++) {
+                    if (maps[i][j] == MapElement.TREASURE.getValue()) {
+                        return new Point(j, i);
+                    }
                 }
             }
-            repaint();
+            return null; // 如果找不到宝藏，则返回null
         }
 
         @Override
@@ -147,6 +173,7 @@ public class Map extends JFrame {
             return maps;
         }
     }
+
 
     public void checkCollisions() {
         for (CharacterStatus adventurer : TeamStatus.getMembers()) { // 确保你是从正确的实例或类访问成员列表
