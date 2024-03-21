@@ -82,7 +82,7 @@ public class Map extends JFrame {
                 while (!gameEnded) {
                     moveAdventurers();
                     try {
-                        Thread.sleep(100); // 将每次移动的时间间隔调整为0.5秒，可以根据需要进行调整
+                        Thread.sleep(100); // 将每次移动的时间间隔调整为0.1秒
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -111,14 +111,12 @@ public class Map extends JFrame {
                             adventurer.y = newY;
                         }
                     }
-                    // 如果冒险者到达了宝藏位置，则显示消息
                     if (newX == treasurePosition.x && newY == treasurePosition.y) {
                         JOptionPane.showMessageDialog(this, "Congratulations! You found the treasure!");
                         gameEnded = true; // 游戏结束
                     }
                 }
             }
-            // 重新绘制地图
             repaint();
         }
 
@@ -181,7 +179,7 @@ public class Map extends JFrame {
 
 
     public void checkCollisions() {
-        for (CharacterStatus adventurer : TeamStatus.getMembers()) { // 确保你是从正确的实例或类访问成员列表
+        for (CharacterStatus adventurer : TeamStatus.getMembers()) { 
             for (Tiger tiger : tigers) {
                 if (adventurer.getPosition().equals(tiger.getPosition())) {
                     int damage = adventurer.hasArmor() ? 10 : 20; // 如果有护甲，损失10生命值，否则20
