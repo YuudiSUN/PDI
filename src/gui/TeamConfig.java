@@ -5,12 +5,14 @@ import status.CharacterStatus;
 import status.TeamStatus;
 import javax.swing.*;
 import java.awt.*;
+import config.GameConfiguration;
 
 public class TeamConfig extends JFrame {
     private int budget = GameRules.INITIAL_BUDGET;
     private JLabel budgetLabel;
     private JButton addMemberButton, addPotionButton, enterMapButton, addWeaponButton, addArmorButton;
     private JComboBox<String> strategyComboBox;
+    private JComboBox<String> SpeedComboBox;
     private static int teamMembers = 0;
     private int potions = 0;
     private boolean hasWeapon = false, hasArmor = false;
@@ -85,7 +87,29 @@ public class TeamConfig extends JFrame {
         strategyComboBox = new JComboBox<>(new String[]{"Strategy 1", "Strategy 2", "Strategy 3"});
         add(new JLabel("Select Strategy:"));
         add(strategyComboBox);
-
+        
+        // GameSpeed
+        SpeedComboBox = new JComboBox<>(new String[]{"High Speed", "Normal", "Low Speed"});
+        add(new JLabel("GameSpeed:"));
+        add(SpeedComboBox);
+        
+        SpeedComboBox.addActionListener(e -> {
+            String selectedSpeed = (String) SpeedComboBox.getSelectedItem();
+            switch (selectedSpeed) {
+                case "High Speed":
+                    GameConfiguration.GAME_SPEED = 300;
+                    break;
+                case "Normal":
+                    GameConfiguration.GAME_SPEED = 1000;
+                    break;
+                case "Low Speed":
+                    GameConfiguration.GAME_SPEED = 2500;
+                    break;
+                default:
+                    GameConfiguration.GAME_SPEED = 1000; // 默认值
+            }
+        });
+        
         enterMapButton = new JButton("Enter Map");
         add(enterMapButton);
         enterMapButton.addActionListener(e -> {

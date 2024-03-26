@@ -11,7 +11,7 @@ public class CharacterStatus extends GameEntity {
 
     // 构造函数
     public CharacterStatus(String name, int health, boolean hasWeapon, boolean hasArmor, Point position) {
-        super(position, "src/image/character.png"); // 假设所有角色使用同一张图片
+        super(position, "C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/character.png"); // 假设所有角色使用同一张图片
         this.name = name;
         this.health = health;
         this.hasWeapon = hasWeapon;

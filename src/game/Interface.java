@@ -21,9 +21,9 @@ public class Interface extends JFrame {
         // 创建背景面板，并设置布局为空布局
         JPanel backgroundPanel = new JPanel() {
             @Override
-            protected void paintComponent(Graphics g) {
+            protected void paintComponent(Graphics g) { 
                 super.paintComponent(g);
-                ImageIcon background = new ImageIcon("src/image/Treasure - Hunter.png"); // 请将图片路径替换为实际的背景图片路径
+                ImageIcon background = new ImageIcon("C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/Treasure - Hunter.png"); // 请将图片路径替换为实际的背景图片路径
                 g.drawImage(background.getImage(), 0, 0, getWidth(), getHeight(), this);
             }
         };

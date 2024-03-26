@@ -1,6 +1,7 @@
 package gui;
 
 import utils.*;
+import config.GameConfiguration;
 import utils.entities.*;
 
 import javax.imageio.ImageIO;
@@ -57,14 +58,14 @@ public class Map extends JFrame {
         }
 
         private void loadImages() throws IOException {
-            playerImage = ImageIO.read(new File("src/image/character.png"));
-            terrainImages[MapElement.GRASS.getValue() - 1] = ImageIO.read(new File("src/image/grass.png"));
-            terrainImages[MapElement.FOREST.getValue() - 1] = ImageIO.read(new File("src/image/forest.png"));
-            terrainImages[MapElement.BRIDGE.getValue() - 1] = ImageIO.read(new File("src/image/bridge.png"));
-            terrainImages[MapElement.RIVER.getValue() - 1] = ImageIO.read(new File("src/image/river.png"));
-            terrainImages[MapElement.MOUNTAIN.getValue() - 1] = ImageIO.read(new File("src/image/mountain.png"));
-            terrainImages[MapElement.MARSHLAND.getValue() - 1] = ImageIO.read(new File("src/image/marshland.png"));
-            terrainImages[MapElement.TREASURE.getValue() - 1] = ImageIO.read(new File("src/image/treasure.png"));
+            playerImage = ImageIO.read(new File("C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/character.png"));
+            terrainImages[MapElement.GRASS.getValue() - 1] = ImageIO.read(new File("C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/grass.png"));
+            terrainImages[MapElement.FOREST.getValue() - 1] = ImageIO.read(new File("C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/forest.png"));
+            terrainImages[MapElement.BRIDGE.getValue() - 1] = ImageIO.read(new File("C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/bridge.png"));
+            terrainImages[MapElement.RIVER.getValue() - 1] = ImageIO.read(new File("C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/river.png"));
+            terrainImages[MapElement.MOUNTAIN.getValue() - 1] = ImageIO.read(new File("C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/mountain.png"));
+            terrainImages[MapElement.MARSHLAND.getValue() - 1] = ImageIO.read(new File("C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/marshland.png"));
+            terrainImages[MapElement.TREASURE.getValue() - 1] = ImageIO.read(new File("C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/treasure.png"));
         }
 
         private void loadEntities() throws IOException {
@@ -88,7 +89,7 @@ public class Map extends JFrame {
                     while (!gameEnded) {
                         moveAdventurer(index);
                         try {
-                            Thread.sleep(500); // 每个冒险者的移动间隔
+                            Thread.sleep(GameConfiguration.GAME_SPEED); // 每个冒险者的移动间隔
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
