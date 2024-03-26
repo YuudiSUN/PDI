@@ -97,8 +97,79 @@ public class Map extends JFrame {
                 }).start();
             }
         }
-
+        
         private void moveAdventurer(int index) {
+            synchronized(this) {
+                Point treasurePosition = findTreasurePosition();
+                Point adventurer = adventurers[index];
+                int newX = adventurer.x;
+                int newY = adventurer.y;
+
+                if (gameEnded) {
+                    return;
+                }
+
+                // 计算新位置（Todo：需要修改为实际策略！）
+                if (treasurePosition != null) {
+                	
+                    int deltaX = Integer.compare(treasurePosition.x, adventurer.x);
+                    int deltaY = Integer.compare(treasurePosition.y, adventurer.y);
+                    newX += deltaX;
+                    newY += deltaY;
+
+                    // 检查新位置是否可用
+                    while (!isPositionAvailable(newX, newY)) {
+                        try {
+                            wait(); // 如果位置不可用，等待
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    // 移动到新位置
+                    moveToNewPosition(index, newX, newY);
+                    notifyAll(); // 通知所有等待的线程位置可能已经变更
+                   
+                }
+                if (newX == treasurePosition.x && newY == treasurePosition.y) {
+                    JOptionPane.showMessageDialog(this, "Congratulations! You found the treasure!");
+                    gameEnded = true; // 游戏结束
+                }
+                
+            }
+            repaint();
+        }
+        
+        private synchronized boolean isPositionAvailable(int x, int y) {
+            for (Point adventurer : adventurers) {
+                if (adventurer.x == x && adventurer.y == y) {
+                    return false; // 位置已被占用
+                }
+            }
+            return true; // 位置可用
+        }
+        
+        // 尝试将探险者移动到新位置
+        private void moveToNewPosition(int index, int newX, int newY) {
+            synchronized(this) {
+                while (!isPositionAvailable(newX, newY)) {
+                    try {
+                        wait(); // 等待位置变为可用
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                // 更新探险者位置
+                adventurers[index].setLocation(newX, newY);
+                notifyAll(); // 通知其他等待的线程检查位置状态
+                
+            }
+        }
+        
+
+        /*
+        private void moveAdventurer(int index) {
+        	
             Point treasurePosition = findTreasurePosition(); // 获取宝藏位置
             Point adventurer = adventurers[index];
             int newX = adventurer.x, newY = adventurer.y;
@@ -162,6 +233,7 @@ public class Map extends JFrame {
             // 重新绘制地图
             repaint();
         }
+        */
         private synchronized void treasureFound() {
             gameEnded = true;
             notifyAll(); // 通知所有等待的线程
