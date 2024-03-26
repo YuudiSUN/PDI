@@ -21,10 +21,10 @@ public class MapGenerator {
         }
 
         // 随机添加其他元素
-        placeRandomElements(map, MapElement.FOREST, 40); // 示例: 放置30个森林
-        placeRandomElements(map, MapElement.RIVER, 30);   // 放置5个河流段
+        placeRandomElements(map, MapElement.FOREST, 300); // 示例: 放置30个森林
+        placeRandomElements(map, MapElement.RIVER, 80);   // 放置5个河流段
         placeRandomElements(map, MapElement.MOUNTAIN, 40); // 放置10座山
-        placeRandomElements(map, MapElement.MARSHLAND, 15); // 放置15个沼泽地
+        placeRandomElements(map, MapElement.MARSHLAND, 40); // 放置15个沼泽地
         // 确保宝藏放在难以到达的位置
         placeTreasure(map);
 

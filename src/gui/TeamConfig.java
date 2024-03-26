@@ -33,7 +33,7 @@ public class TeamConfig extends JFrame {
         addMemberButton.addActionListener(e -> {
             if (budget >= GameRules.COST_PER_MEMBER) {
                 budget -= GameRules.COST_PER_MEMBER;
-                CharacterStatus newMember = new CharacterStatus("Hunter" + nextCharacterId++, 100, hasWeapon, hasArmor);
+                CharacterStatus newMember = new CharacterStatus("Hunter" + nextCharacterId++, 100, hasWeapon, hasArmor, null);
                 teamStatus.addMember(newMember);
                 teamMembers++;
                 updateDisplay();

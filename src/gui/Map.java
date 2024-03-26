@@ -102,6 +102,9 @@ public class Map extends JFrame {
             Point adventurer = adventurers[index];
             int newX = adventurer.x, newY = adventurer.y;
             int tries = 0; // 记录尝试移动的次数
+            if (gameEnded) {
+                return; // 如果游戏已经结束，则立即返回
+            }
             if (treasurePosition != null) {
                 // 计算朝着宝藏方向的增量
                 int deltaX = Integer.compare(treasurePosition.x, adventurer.x);
@@ -126,7 +129,7 @@ public class Map extends JFrame {
                 // 如果尝试了三次仍然无法移动，则随机选择一个新的方向
                 if (tries == 3) {
                     int[] directions = {0, 1, 2, 3}; // 0: 上, 1: 下, 2: 左, 3: 右
-                    Collections.shuffle(Arrays.asList(directions)); // 随机打乱方向数组
+                    Collections.shuffle(Arrays.asList(directions)); // 随机打乱
                     for (int dir : directions) {
                         if (dir == 0) { // 上
                             newY = adventurer.y - 1;
@@ -138,11 +141,11 @@ public class Map extends JFrame {
                             newX = adventurer.x + 1;
                         }
                         if (isValidMove(newX, newY) && !isOccupied(newX, newY)) {
-                            break; // 移动成功，跳出循环
+                            break; // 跳出循环
                         }
                     }
                 }
-                // 如果冒险者到达了宝藏位置，则显示消息
+                // 宝藏
                 if (newX == treasurePosition.x && newY == treasurePosition.y) {
                     JOptionPane.showMessageDialog(this, "Congratulations! You found the treasure!");
                     gameEnded = true; // 游戏结束
@@ -150,9 +153,19 @@ public class Map extends JFrame {
                 // 更新冒险者位置
                 adventurer.setLocation(newX, newY);
             }
+            synchronized(this) {
+                if (gameEnded) {
+                    return; // 如果游戏已经结束，停止移动
+                }
+            }
             // 重新绘制地图
             repaint();
         }
+        private synchronized void treasureFound() {
+            gameEnded = true;
+            notifyAll(); // 通知所有等待的线程
+        }
+        
 
         private boolean isOccupied(int x, int y) {
             for (Point adventurer : adventurers) {
