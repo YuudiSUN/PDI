@@ -71,8 +71,9 @@ public class Map extends JFrame {
             terrainImages[MapElement.TREASURE.getValue() - 1] = ImageIO.read(new File("C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/treasure.png"));
         }
 
+        // 生成动物
         private void loadEntities() throws IOException {
-            bears = EntityLoader.loadBears(5);
+            bears = EntityLoader.loadBears(60);
             foxes = EntityLoader.loadFoxes(3);
             tigers = EntityLoader.loadTigers(2);
             dragon = EntityLoader.loadDragon();
@@ -145,7 +146,6 @@ public class Map extends JFrame {
         }
         
         private void checkEncounterWithAnimals(int x, int y, int adventurerIndex) {
-            // 这里简化了动物列表的处理。根据你的实现，可能需要分别检查狐狸、老虎和熊
             Animal encounteredAnimal = findAnimalAtPosition(x, y);
             if (encounteredAnimal != null) {
                 // 假设TeamStatus类有一个方法可以获取指定索引的探险者，并且CharacterStatus有reduceHealth方法
@@ -153,7 +153,6 @@ public class Map extends JFrame {
                 adventurer.reduceHealth(30); // 探险者损失30点生命值
                 removeAnimal(encounteredAnimal); // 从地图上移除动物
                 teamStatusDisplay.updateDisplay();
-
             }
         }
         
@@ -185,7 +184,6 @@ public class Map extends JFrame {
                     return tiger;
                 }
             }
-            // 如果你也需要检查龙
             if (dragon != null && dragon.getPosition().x == x && dragon.getPosition().y == y) {
                 return dragon;
             }

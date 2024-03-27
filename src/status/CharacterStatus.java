@@ -28,7 +28,7 @@ public class CharacterStatus extends GameEntity {
     }
 
     public int getHealth() {
-        return health;
+        return this.health;
     }
 
     public void setHealth(int health) {
