@@ -34,6 +34,10 @@ public class CharacterStatus extends GameEntity {
     public void setHealth(int health) {
         this.health = health;
     }
+    
+    public void reduceHealth(int amount) {
+    	this.health -= amount;
+    }
 
     public boolean hasWeapon() {
         return hasWeapon;

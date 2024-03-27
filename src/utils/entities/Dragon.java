@@ -3,7 +3,7 @@ package utils.entities;
 import java.awt.Point;
 import java.awt.Image;
 
-public class Dragon {
+public class Dragon implements Animal{
     private Point position;
     private Image image;
 
@@ -12,6 +12,7 @@ public class Dragon {
         this.image = image;
     }
 
+    @Override
     public Point getPosition() {
         return position;
     }

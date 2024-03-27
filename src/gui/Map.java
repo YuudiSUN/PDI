@@ -3,6 +3,7 @@ package gui;
 import utils.*;
 import config.GameConfiguration;
 import utils.entities.*;
+import status.TeamStatusDisplay;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -16,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+
 
 public class Map extends JFrame {
     private static final long serialVersionUID = 1L;
@@ -41,6 +43,7 @@ public class Map extends JFrame {
         addKeyListener(new KeyMonitor());
         add(mapPanel);
         setVisible(true);
+        teamStatusDisplay = new TeamStatusDisplay(new TeamStatus());
         
     }
 
@@ -75,6 +78,7 @@ public class Map extends JFrame {
             dragon = EntityLoader.loadDragon();
         }
 
+        // 初始化探险者数组Point
         private void initializeAdventurers(int count) {
             adventurers = new Point[count];
             for (int i = 0; i < count; i++) {
@@ -125,7 +129,7 @@ public class Map extends JFrame {
                             e.printStackTrace();
                         }
                     }
-
+                    checkEncounterWithAnimals(newX, newY, index);
                     // 移动到新位置
                     moveToNewPosition(index, newX, newY);
                     notifyAll(); // 通知所有等待的线程位置可能已经变更
@@ -140,6 +144,54 @@ public class Map extends JFrame {
             repaint();
         }
         
+        private void checkEncounterWithAnimals(int x, int y, int adventurerIndex) {
+            // 这里简化了动物列表的处理。根据你的实现，可能需要分别检查狐狸、老虎和熊
+            Animal encounteredAnimal = findAnimalAtPosition(x, y);
+            if (encounteredAnimal != null) {
+                // 假设TeamStatus类有一个方法可以获取指定索引的探险者，并且CharacterStatus有reduceHealth方法
+                CharacterStatus adventurer = TeamStatus.getMember(adventurerIndex);
+                adventurer.reduceHealth(30); // 探险者损失30点生命值
+                removeAnimal(encounteredAnimal); // 从地图上移除动物
+                teamStatusDisplay.updateDisplay();
+
+            }
+        }
+        
+        private void removeAnimal(Animal animal) {
+            if (animal instanceof Bear) {
+                bears.remove(animal);
+            } else if (animal instanceof Fox) {
+                foxes.remove(animal);
+            } else if (animal instanceof Tiger) {
+                tigers.remove(animal);
+            } else if (animal instanceof Dragon) {
+                dragon = null;
+            }
+        }
+
+        private Animal findAnimalAtPosition(int x, int y) {
+            for (Bear bear : bears) {
+                if (bear.getPosition().x == x && bear.getPosition().y == y) {
+                    return bear;
+                }
+            }
+            for (Fox fox : foxes) {
+                if (fox.getPosition().x == x && fox.getPosition().y == y) {
+                    return fox;
+                }
+            }
+            for (Tiger tiger : tigers) {
+                if (tiger.getPosition().x == x && tiger.getPosition().y == y) {
+                    return tiger;
+                }
+            }
+            // 如果你也需要检查龙
+            if (dragon != null && dragon.getPosition().x == x && dragon.getPosition().y == y) {
+                return dragon;
+            }
+            return null;
+        }
+
         private synchronized boolean isPositionAvailable(int x, int y) {
             for (Point adventurer : adventurers) {
                 if (adventurer.x == x && adventurer.y == y) {

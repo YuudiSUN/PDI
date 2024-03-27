@@ -84,9 +84,10 @@ public class TeamConfig extends JFrame {
             }
         });
 
-        strategyComboBox = new JComboBox<>(new String[]{"Strategy 1", "Strategy 2", "Strategy 3"});
+        strategyComboBox = new JComboBox<>(new String[]{"Radicalisation", "Conservative"});
         add(new JLabel("Select Strategy:"));
         add(strategyComboBox);
+        
         
         // GameSpeed
         SpeedComboBox = new JComboBox<>(new String[]{"High Speed", "Normal", "Low Speed"});
