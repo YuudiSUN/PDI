@@ -2,6 +2,7 @@ package gui;
 
 import utils.*;
 import config.GameConfiguration;
+import game.GameSettings;
 import utils.entities.*;
 import status.TeamStatusDisplay;
 
@@ -61,14 +62,14 @@ public class Map extends JFrame {
         }
 
         private void loadImages() throws IOException {
-            playerImage = ImageIO.read(new File("C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/character.png"));
-            terrainImages[MapElement.GRASS.getValue() - 1] = ImageIO.read(new File("C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/grass.png"));
-            terrainImages[MapElement.FOREST.getValue() - 1] = ImageIO.read(new File("C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/forest.png"));
-            terrainImages[MapElement.BRIDGE.getValue() - 1] = ImageIO.read(new File("C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/bridge.png"));
-            terrainImages[MapElement.RIVER.getValue() - 1] = ImageIO.read(new File("C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/river.png"));
-            terrainImages[MapElement.MOUNTAIN.getValue() - 1] = ImageIO.read(new File("C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/mountain.png"));
-            terrainImages[MapElement.MARSHLAND.getValue() - 1] = ImageIO.read(new File("C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/marshland.png"));
-            terrainImages[MapElement.TREASURE.getValue() - 1] = ImageIO.read(new File("C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/treasure.png"));
+            playerImage = ImageIO.read(new File("src/image/character.png"));
+            terrainImages[MapElement.GRASS.getValue() - 1] = ImageIO.read(new File("src/image/grass.png"));
+            terrainImages[MapElement.FOREST.getValue() - 1] = ImageIO.read(new File("src/image/forest.png"));
+            terrainImages[MapElement.BRIDGE.getValue() - 1] = ImageIO.read(new File("src/image/bridge.png"));
+            terrainImages[MapElement.RIVER.getValue() - 1] = ImageIO.read(new File("src/image/river.png"));
+            terrainImages[MapElement.MOUNTAIN.getValue() - 1] = ImageIO.read(new File("src/image/mountain.png"));
+            terrainImages[MapElement.MARSHLAND.getValue() - 1] = ImageIO.read(new File("src/image/marshland.png"));
+            terrainImages[MapElement.TREASURE.getValue() - 1] = ImageIO.read(new File("src/image/treasure.png"));
         }
 
         // 生成动物
@@ -107,43 +108,55 @@ public class Map extends JFrame {
             synchronized(this) {
                 Point treasurePosition = findTreasurePosition();
                 Point adventurer = adventurers[index];
-                int newX = adventurer.x;
-                int newY = adventurer.y;
 
-                if (gameEnded) {
+                if (gameEnded || treasurePosition == null) {
                     return;
                 }
 
-                // 计算新位置（Todo：需要修改为实际策略！）
-                if (treasurePosition != null) {
-                	
-                    int deltaX = Integer.compare(treasurePosition.x, adventurer.x);
-                    int deltaY = Integer.compare(treasurePosition.y, adventurer.y);
-                    newX += deltaX;
-                    newY += deltaY;
+                // 获取当前策略
+                String currentStrategy = GameSettings.getInstance().getCurrentStrategy();
 
-                    // 检查新位置是否可用
-                    while (!isPositionAvailable(newX, newY)) {
-                        try {
-                            wait(); // 如果位置不可用，等待
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    checkEncounterWithAnimals(newX, newY, index);
-                    // 移动到新位置
-                    moveToNewPosition(index, newX, newY);
-                    notifyAll(); // 通知所有等待的线程位置可能已经变更
-                   
+
+                Point newLocation;
+                switch (currentStrategy) {
+                    case "Radical":
+                        newLocation = game.Strategy.moveTowardsTreasure(adventurer, treasurePosition);
+                        break;
+                    case "Conservative":
+                        newLocation = game.Strategy.stayPut(adventurer);
+                        break;
+                    case "Random":
+                        newLocation = game.Strategy.moveRandomly(adventurer);
+                        break;
+                    default:
+                        newLocation = new Point(adventurer.x, adventurer.y); // 默认不移动
                 }
+
+                int newX = newLocation.x;
+                int newY = newLocation.y;
+
+                // 检查新位置是否可用
+                while (!isPositionAvailable(newX, newY)) {
+                    try {
+                        wait(); // 如果位置不可用，等待
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                checkEncounterWithAnimals(newX, newY, index);
+                // 移动到新位置
+                moveToNewPosition(index, newX, newY);
+                notifyAll(); // 通知所有等待的线程位置可能已经变更
+
                 if (newX == treasurePosition.x && newY == treasurePosition.y) {
                     JOptionPane.showMessageDialog(this, "Congratulations! You found the treasure!");
                     gameEnded = true; // 游戏结束
                 }
-                
             }
             repaint();
         }
+
         
         private void checkEncounterWithAnimals(int x, int y, int adventurerIndex) {
             Animal encounteredAnimal = findAnimalAtPosition(x, y);

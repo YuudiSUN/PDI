@@ -6,6 +6,7 @@ import status.TeamStatus;
 import javax.swing.*;
 import java.awt.*;
 import config.GameConfiguration;
+import game.GameSettings;
 
 public class TeamConfig extends JFrame {
     private int budget = GameRules.INITIAL_BUDGET;
@@ -18,7 +19,7 @@ public class TeamConfig extends JFrame {
     private boolean hasWeapon = false, hasArmor = false;
     private TeamStatus teamStatus = new TeamStatus();
     private int nextCharacterId = 1; // Moved this here to keep track properly
-
+    private String selectedStrategy = "Radical";//用于套用策略在map中
     public TeamConfig() {
         setTitle("Configure Your Team");
         setSize(600, 400);
@@ -84,11 +85,16 @@ public class TeamConfig extends JFrame {
             }
         });
 
-        strategyComboBox = new JComboBox<>(new String[]{"Radicalisation", "Conservative"});
+        strategyComboBox = new JComboBox<>(new String[]{"Radical", "Conservative", "Random"});
         add(new JLabel("Select Strategy:"));
         add(strategyComboBox);
-        
-        
+     // 与gamesettings相互应
+        strategyComboBox.addActionListener(e -> {
+            String selectedStrategy = (String) strategyComboBox.getSelectedItem();
+            GameSettings.getInstance().setCurrentStrategy(selectedStrategy);
+        });
+
+       
         // GameSpeed
         SpeedComboBox = new JComboBox<>(new String[]{"High Speed", "Normal", "Low Speed"});
         add(new JLabel("GameSpeed:"));
