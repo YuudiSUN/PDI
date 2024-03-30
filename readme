@@ -1,4 +1,4 @@
-注意：Interface.java,Map.java中要替换地图地址
+注意：Interface.java,Map.java, CharacterStatus, EntityLoader中要替换地图地址
 在TestGame.java中启动游戏
 
 ##这次更新

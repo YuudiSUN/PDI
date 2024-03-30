@@ -21,10 +21,10 @@ public class MapGenerator {
         }
 
         // 随机添加其他元素
-        placeRandomElements(map, MapElement.FOREST, 300); // 示例: 放置30个森林
-        placeRandomElements(map, MapElement.RIVER, 80);   // 放置5个河流段
-        placeRandomElements(map, MapElement.MOUNTAIN, 40); // 放置10座山
-        placeRandomElements(map, MapElement.MARSHLAND, 40); // 放置15个沼泽地
+        placeRandomElements(map, MapElement.FOREST, 50); // 放置30片森林
+        placeRandomElements(map, MapElement.RIVER, 10);   // 放置8条河流
+        placeRandomElements(map, MapElement.MOUNTAIN, 20); // 放置10座山
+        placeRandomElements(map, MapElement.MARSHLAND, 15); // 放置20片沼泽地
         // 确保宝藏放在难以到达的位置
         placeTreasure(map);
 
@@ -33,9 +33,21 @@ public class MapGenerator {
 
     private static void placeRandomElements(Integer[][] map, MapElement element, int count) {
         for (int i = 0; i < count; i++) {
-            int x = random.nextInt(MAP_WIDTH);
-            int y = random.nextInt(MAP_HEIGHT);
-            map[y][x] = element.getValue();
+            int x = random.nextInt(MAP_WIDTH - 2); // Ensure enough space for the elements
+            int y = random.nextInt(MAP_HEIGHT - 2);
+
+            // 检查地图上是否已有其他元素，如果有则重新生成位置
+            while (map[y][x] != MapElement.GRASS.getValue()) {
+                x = random.nextInt(MAP_WIDTH - 2);
+                y = random.nextInt(MAP_HEIGHT - 2);
+            }
+
+            // 放置元素
+            for (int dy = 0; dy < 2; dy++) {
+                for (int dx = 0; dx < 2; dx++) {
+                    map[y + dy][x + dx] = element.getValue();
+                }
+            }
         }
     }
 
