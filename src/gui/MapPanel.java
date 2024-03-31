@@ -2,12 +2,15 @@ package gui;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import map.GameMap;
 import map.Cell; // 导入Cell类
+import entities.Adventurer;
+
 
 public class MapPanel extends JPanel {
     private static final int CELL_WIDTH = 32; // 假设每个单元格宽度为32像素
@@ -20,8 +23,13 @@ public class MapPanel extends JPanel {
     private Image marshlandImage;
     private Image riverImage;
     private Image treasureImage;
-
+    private Image adventurerImage; 
+    
+ // 在MapPanel类中添加以下内容
+    private List<Adventurer> adventurers;
     public MapPanel(GameMap gameMap) {
+    	
+    	this.adventurers = adventurers;
         this.gameMap = gameMap;
         loadImages();
     }
@@ -36,6 +44,7 @@ public class MapPanel extends JPanel {
         marshlandImage = new ImageIcon("src/images/marshland.png").getImage();
         riverImage = new ImageIcon("src/images/river.png").getImage();
         treasureImage = new ImageIcon("src/images/treasure.png").getImage();
+        adventurerImage = new ImageIcon("src/images/character.png").getImage();
     }
 
 	@Override

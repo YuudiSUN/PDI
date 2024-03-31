@@ -1,24 +1,24 @@
 package entities;
 
-import java.awt.Point;
+import map.Cell;
 
 public abstract class Entity {
-    protected Point position; // 使用java.awt.Point表示位置
+    protected Cell currentPosition; // 使用 map.Cell 表示位置
     protected int health;
 
-    public Entity(Point position, int health) {
-        this.position = position;
+    public Entity(Cell startPosition, int health) {
+        this.currentPosition = startPosition;
         this.health = health;
     }
 
     // 获取实体位置
-    public Point getPosition() {
-        return position;
+    public Cell getPosition() {
+        return currentPosition;
     }
 
     // 设置实体位置
-    public void setPosition(Point position) {
-        this.position = position;
+    public void setPosition(Cell position) {
+        this.currentPosition = position;
     }
 
     // 获取生命值
