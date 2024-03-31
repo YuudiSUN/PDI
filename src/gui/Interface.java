@@ -1,4 +1,4 @@
-package game;
+package gui;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +23,7 @@ public class Interface extends JFrame {
             @Override
             protected void paintComponent(Graphics g) { 
                 super.paintComponent(g);
-                ImageIcon background = new ImageIcon("src/image/Treasure - Hunter.png"); // 请将图片路径替换为实际的背景图片路径
+                ImageIcon background = new ImageIcon("src/images/Treasure - Hunter.png"); // 请将图片路径替换为实际的背景图片路径
                 g.drawImage(background.getImage(), 0, 0, getWidth(), getHeight(), this);
             }
         };

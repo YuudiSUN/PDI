@@ -1,6 +1,6 @@
 package test;
 
-import game.Interface; 
+import gui.Interface; 
 
 public class TestGame {
     public static void main(String[] args) {
