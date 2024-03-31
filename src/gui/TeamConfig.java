@@ -58,7 +58,7 @@ public class TeamConfig extends JFrame {
                 JFrame mapFrame = new JFrame("Game Map");
                 mapFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 mapFrame.getContentPane().add(new MapPanel(gameMap));
-                mapFrame.setSize(640, 640); // 根据实际地图大小调整
+                mapFrame.setSize(640, 668); // 根据实际地图大小调整
                 mapFrame.setLocationRelativeTo(null);
                 mapFrame.setVisible(true);
 

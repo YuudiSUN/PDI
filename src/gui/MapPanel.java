@@ -15,6 +15,11 @@ public class MapPanel extends JPanel {
 
     private GameMap gameMap;
     private Image grassImage;
+    private Image forestImage;
+    private Image mountainImage;
+    private Image marshlandImage;
+    private Image riverImage;
+    private Image treasureImage;
 
     public MapPanel(GameMap gameMap) {
         this.gameMap = gameMap;
@@ -25,19 +30,44 @@ public class MapPanel extends JPanel {
 	private void loadImages() {
         // 加载草地图像，实际应用中应该处理异常
         grassImage = new ImageIcon("src/images/grass.png").getImage();
+        // 加载地形图片，确保路径正确
+        forestImage = new ImageIcon("src/images/forest.png").getImage();
+        mountainImage = new ImageIcon("src/images/mountain.png").getImage();
+        marshlandImage = new ImageIcon("src/images/marshland.png").getImage();
+        riverImage = new ImageIcon("src/images/river.png").getImage();
+        treasureImage = new ImageIcon("src/images/treasure.png").getImage();
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        for (int i = 0; i < gameMap.getHeight(); i++) {
-            for (int j = 0; j < gameMap.getWidth(); j++) {
-                Cell cell = gameMap.getCell(j, i);
-                if (cell.getTerrain().equals("grass")) {
-                    g.drawImage(grassImage, j * CELL_WIDTH, i * CELL_HEIGHT, this);
-                }
-                // 如果Cell有其他地形或实体，这里可以添加更多的绘制逻辑
-            }
-        }
-    }
+	@Override
+	protected void paintComponent(Graphics g) {
+	    super.paintComponent(g);
+	    for (int y = 0; y < gameMap.getHeight(); y++) {
+	        for (int x = 0; x < gameMap.getWidth(); x++) {
+	            Cell cell = gameMap.getCell(x, y);
+	            Image image = getImageForTerrain(cell.getTerrain());
+	            g.drawImage(image, x * CELL_WIDTH, y * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT, this);
+	        }
+	    }
+	}
+
+	private Image getImageForTerrain(Cell.TerrainType terrain) {
+	    switch (terrain) {
+	        case GRASS:
+	            return grassImage;
+	        case MOUNTAIN:
+	            return mountainImage;
+	        case SWAMP:
+	            return marshlandImage;
+	        case FOREST:
+	            return forestImage;
+	        case RIVER:
+	            return riverImage;
+	        case TREASURE:
+	        	return treasureImage;
+	        default:
+	        	return grassImage;
+	    }
+	}
+
+
 }
