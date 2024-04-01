@@ -62,14 +62,14 @@ public class Map extends JFrame {
         }
 
         private void loadImages() throws IOException {
-            playerImage = ImageIO.read(new File("src/image/character.png"));
-            terrainImages[MapElement.GRASS.getValue() - 1] = ImageIO.read(new File("src/image/grass.png"));
-            terrainImages[MapElement.FOREST.getValue() - 1] = ImageIO.read(new File("src/image/forest.png"));
-            terrainImages[MapElement.BRIDGE.getValue() - 1] = ImageIO.read(new File("src/image/bridge.png"));
-            terrainImages[MapElement.RIVER.getValue() - 1] = ImageIO.read(new File("src/image/river.png"));
-            terrainImages[MapElement.MOUNTAIN.getValue() - 1] = ImageIO.read(new File("src/image/mountain.png"));
-            terrainImages[MapElement.MARSHLAND.getValue() - 1] = ImageIO.read(new File("src/image/marshland.png"));
-            terrainImages[MapElement.TREASURE.getValue() - 1] = ImageIO.read(new File("src/image/treasure.png"));
+            playerImage = ImageIO.read(new File("C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/character.png"));
+            terrainImages[MapElement.GRASS.getValue() - 1] = ImageIO.read(new File("C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/grass.png"));
+            terrainImages[MapElement.FOREST.getValue() - 1] = ImageIO.read(new File("C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/forest.png"));
+            terrainImages[MapElement.BRIDGE.getValue() - 1] = ImageIO.read(new File("C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/bridge.png"));
+            terrainImages[MapElement.RIVER.getValue() - 1] = ImageIO.read(new File("C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/river.png"));
+            terrainImages[MapElement.MOUNTAIN.getValue() - 1] = ImageIO.read(new File("C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/mountain.png"));
+            terrainImages[MapElement.MARSHLAND.getValue() - 1] = ImageIO.read(new File("C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/marshland.png"));
+            terrainImages[MapElement.TREASURE.getValue() - 1] = ImageIO.read(new File("C:/Users/yingb/Desktop/CY-L3II/InterProjet-Explorateur/PDI_Github/PDI/src/image/treasure.png"));
         }
 
         // 生成动物
@@ -108,7 +108,7 @@ public class Map extends JFrame {
             synchronized(this) {
                 Point treasurePosition = findTreasurePosition();
                 Point adventurer = adventurers[index];
-
+                int tries = 0;
                 if (gameEnded || treasurePosition == null) {
                     return;
                 }
@@ -134,7 +134,47 @@ public class Map extends JFrame {
 
                 int newX = newLocation.x;
                 int newY = newLocation.y;
-
+                
+                int deltaX = Integer.compare(newLocation.x, adventurer.x);
+                int deltaY = Integer.compare(newLocation.x, adventurer.x);
+                
+                while (tries < 3) { // 在同一位置最多尝试三次
+                    if (Math.random() < 0.5) {
+                        newX += deltaX;
+                        if (isValidMove(newX, newY) && !isOccupied(newX, newY)) {
+                            break; // 移动成功，跳出循环
+                        }
+                        newX -= deltaX; // 移动失败，恢复位置
+                    } else {
+                        newY += deltaY;
+                        if (isValidMove(newX, newY) && !isOccupied(newX, newY)) {
+                            break; // 移动成功，跳出循环
+                        }
+                        newY -= deltaY; // 移动失败，恢复位置
+                    }
+                    tries++; // 增加尝试次数
+                }
+                // 如果尝试了三次仍然无法移动，则随机选择一个新的方向
+                if (tries == 3) {
+                    int[] directions = {0, 1, 2, 3}; // 0: 上, 1: 下, 2: 左, 3: 右
+                    Collections.shuffle(Arrays.asList(directions)); // 随机打乱
+                    for (int dir : directions) {
+                        if (dir == 0) { // 上
+                            newY = adventurer.y - 1;
+                        } else if (dir == 1) { // 下
+                            newY = adventurer.y + 1;
+                        } else if (dir == 2) { // 左
+                            newX = adventurer.x - 1;
+                        } else { // 右
+                            newX = adventurer.x + 1;
+                        }
+                        if (isValidMove(newX, newY) && !isOccupied(newX, newY)) {
+                            break; // 跳出循环
+                        }
+                    }
+                }
+                
+                
                 // 检查新位置是否可用
                 while (!isPositionAvailable(newX, newY)) {
                     try {
