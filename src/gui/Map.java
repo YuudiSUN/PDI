@@ -258,20 +258,21 @@ public class Map extends JFrame {
         }
 
         
-        // 尝试将探险者移动到新位置
         private synchronized void moveToNewPosition(int index, int newX, int newY) {
-            while (!isPositionAvailable(newX, newY)) {
+            while (!isPositionAvailable(newX, newY) && !gameEnded) {
                 try {
-                    wait(); // 等待位置变为可用
+                    wait(); // 等待位置变为可用或游戏结束
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-            // 更新探险者位置
-            adventurers[index].setLocation(newX, newY);
-            notifyAll(); // 通知其他等待的线程检查位置状态
+            // 如果游戏已经结束，则不再移动
+            if (!gameEnded) {
+                // 更新探险者位置
+                adventurers[index].setLocation(newX, newY);
+                notifyAll(); // 通知其他等待的线程检查位置状态
+            }
         }
-        
         private void moveAdventurer(int index) {
             Point treasurePosition = findTreasurePosition(); // 获取宝藏位置
             Point adventurer = adventurers[index];
@@ -337,22 +338,13 @@ public class Map extends JFrame {
             // 重新绘制地图
             repaint();
         }
-
         private synchronized void treasureFound() {
             gameEnded = true;
             notifyAll(); // 通知所有等待的线程
         }
         
 
-        private boolean isOccupied(int x, int y) {
-            for (Point adventurer : adventurers) {
-                int index = 0;
-				if (adventurer != adventurers[index] && adventurer.x == x && adventurer.y == y) {
-                    return true; // 目标位置已经被其他冒险者占据
-                }
-            }
-            return false;
-        }
+
 
         private boolean isValidMove(int x, int y) {
             if (x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_HEIGHT ||
