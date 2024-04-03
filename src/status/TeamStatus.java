@@ -23,4 +23,10 @@ public class TeamStatus {
         return members;
     }
 
+    public static void reduceHealth(int index, int amount) {
+        CharacterStatus member = getMember(index);
+        if (member != null) {
+            member.reduceHealth(amount);
+        }
+    }
 }

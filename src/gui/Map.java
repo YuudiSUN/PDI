@@ -56,7 +56,7 @@ public class Map extends JFrame {
 
         public MapPanel() throws IOException {
             loadImages();
-            loadEntities();
+            loadEntities(MAP_WIDTH, MAP_HEIGHT);
             initializeAdventurers(TeamConfig.getAdventurersCount());
             startAdventurersMovement();
         }
@@ -71,14 +71,15 @@ public class Map extends JFrame {
             terrainImages[MapElement.MARSHLAND.getValue() - 1] = ImageIO.read(new File("src/image/marshland.png"));
             terrainImages[MapElement.TREASURE.getValue() - 1] = ImageIO.read(new File("src/image/treasure.png"));
         }
-
-        // 生成动物
-        private void loadEntities() throws IOException {
-            bears = EntityLoader.loadBears(60);
-            foxes = EntityLoader.loadFoxes(3);
-            tigers = EntityLoader.loadTigers(2);
+        
+     // 假设你的地图的宽度为 mapWidth，高度为 mapHeight
+        private void loadEntities(int mapWidth, int mapHeight) throws IOException {
+            bears = EntityLoader.loadBears(60, mapWidth, mapHeight);
+            foxes = EntityLoader.loadFoxes(3, mapWidth, mapHeight);
+            tigers = EntityLoader.loadTigers(2, mapWidth, mapHeight);
             dragon = EntityLoader.loadDragon();
         }
+
 
         // 初始化探险者数组Point
         private void initializeAdventurers(int count) {
@@ -212,10 +213,14 @@ public class Map extends JFrame {
         private void removeAnimal(Animal animal) {
             if (animal instanceof Bear) {
                 bears.remove(animal);
+                System.out.println("kill Bear!");
+                
             } else if (animal instanceof Fox) {
                 foxes.remove(animal);
+                System.out.println("kill Fox!");
             } else if (animal instanceof Tiger) {
                 tigers.remove(animal);
+                System.out.println("kill tiger!");
             } else if (animal instanceof Dragon) {
                 dragon = null;
             }
@@ -272,7 +277,6 @@ public class Map extends JFrame {
 
 
         private void moveAdventurer(int index) {
-        	
             Point treasurePosition = findTreasurePosition(); // 获取宝藏位置
             Point adventurer = adventurers[index];
             int newX = adventurer.x, newY = adventurer.y;
@@ -329,6 +333,9 @@ public class Map extends JFrame {
                 adventurer.setLocation(newX, newY);
                 // 打印冒险者的移动路径
                 System.out.println("adventurer " + index + " move to (" + newX + ", " + newY + ")");
+                
+                // 检查移动后是否遇到了动物
+                checkEncounterWithAnimals(newX, newY, index);
             }
             synchronized(this) {
                 if (gameEnded) {
@@ -388,18 +395,19 @@ public class Map extends JFrame {
                 g.drawImage(playerImage, point.x * BLOCK_WIDTH, point.y * BLOCK_HEIGHT, this);
             }
             for (Bear bear : bears) {
-                g.drawImage(bear.getImage(), bear.getPosition().x * BLOCK_WIDTH, bear.getPosition().y * BLOCK_HEIGHT + 30, this);
+                g.drawImage(bear.getImage(), bear.getPosition().x * BLOCK_WIDTH, bear.getPosition().y * BLOCK_HEIGHT, this);
             }
             for (Fox fox : foxes) {
-                g.drawImage(fox.getImage(), fox.getPosition().x * BLOCK_WIDTH, fox.getPosition().y * BLOCK_HEIGHT + 30, this);
+                g.drawImage(fox.getImage(), fox.getPosition().x * BLOCK_WIDTH, fox.getPosition().y * BLOCK_HEIGHT, this);
             }
             for (Tiger tiger : tigers) {
-                g.drawImage(tiger.getImage(), tiger.getPosition().x * BLOCK_WIDTH, tiger.getPosition().y * BLOCK_HEIGHT + 30, this);
+                g.drawImage(tiger.getImage(), tiger.getPosition().x * BLOCK_WIDTH, tiger.getPosition().y * BLOCK_HEIGHT, this);
             }
             if (dragon != null) {
                 g.drawImage(dragon.getImage(), dragon.getPosition().x * BLOCK_WIDTH, dragon.getPosition().y * BLOCK_HEIGHT, this);
             }
         }
+
 
         public void updateAdventurerPosition(int index, int newX, int newY) {
             if (index >= 0 && index < adventurers.length) {
