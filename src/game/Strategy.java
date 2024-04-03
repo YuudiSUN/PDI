@@ -61,4 +61,55 @@ public class Strategy {
         // 否则，向宝藏移动
         return moveTowardsTreasure(adventurerPosition, treasurePosition);
     }
+ // 遇到熊时的小策略：逃跑
+    public static Point runAwayFromBear(Point adventurerPosition, Point bearPosition, Point treasurePosition) {
+        // 如果冒险者和熊位置相同，向远离熊的方向移动
+        if (adventurerPosition.equals(bearPosition)) {
+            int deltaX = Integer.compare(adventurerPosition.x, bearPosition.x);
+            int deltaY = Integer.compare(adventurerPosition.y, bearPosition.y);
+            return new Point(adventurerPosition.x - deltaX, adventurerPosition.y - deltaY);
+        }
+        // 否则，向宝藏移动
+        return moveTowardsTreasure(adventurerPosition, treasurePosition);
+    }
+
+    // 遇到老虎时的小策略：尝试逃跑，但如果逃跑失败则与老虎战斗
+    public static Point tryToRunFromTiger(Point adventurerPosition, Point tigerPosition, Point treasurePosition) {
+        // 如果冒险者和老虎位置相同，尝试逃跑
+        if (adventurerPosition.equals(tigerPosition)) {
+            // 随机移动尝试逃跑
+            return moveRandomly(adventurerPosition);
+        }
+        // 否则，向宝藏移动
+        return moveTowardsTreasure(adventurerPosition, treasurePosition);
+    }
+ // 遇到树时的小策略：改变方向绕过树
+    public static Point changeDirectionAroundTree(Point adventurerPosition, Point treePosition, Point treasurePosition) {
+        // 如果冒险者和树位置相同，随机选择一个新方向
+        if (adventurerPosition.equals(treePosition)) {
+            Random random = new Random();
+            int deltaX = random.nextInt(3) - 1; // 随机生成-1、0或1
+            int deltaY = random.nextInt(3) - 1;
+            // 确保不是原地不动
+            while (deltaX == 0 && deltaY == 0) {
+                deltaX = random.nextInt(3) - 1;
+                deltaY = random.nextInt(3) - 1;
+            }
+            return new Point(adventurerPosition.x + deltaX, adventurerPosition.y + deltaY);
+        }
+        // 否则，向宝藏移动
+        return moveTowardsTreasure(adventurerPosition, treasurePosition);
+    }
+
+    // 遇到山时的小策略：停止移动
+    public static Point stopMovingAtMountain(Point adventurerPosition, Point mountainPosition, Point treasurePosition) {
+        // 如果冒险者和山位置相同，原地不动
+        if (adventurerPosition.equals(mountainPosition)) {
+            return stayPut(adventurerPosition);
+        }
+        // 否则，向宝藏移动
+        return moveTowardsTreasure(adventurerPosition, treasurePosition);
+    }
+
 }
+

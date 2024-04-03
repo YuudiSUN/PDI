@@ -3,6 +3,7 @@ package gui;
 import utils.*;
 import config.GameConfiguration;
 import game.GameSettings;
+import game.Strategy;
 import utils.entities.*;
 import status.TeamStatusDisplay;
 
@@ -62,14 +63,14 @@ public class Map extends JFrame {
         }
 
         private void loadImages() throws IOException {
-            playerImage = ImageIO.read(new File("C:/Users/10107/Desktop/PDI-main/src/image/character.png"));
-            terrainImages[MapElement.GRASS.getValue() - 1] = ImageIO.read(new File("C:/Users/10107/Desktop/PDI-main/src/image/grass.png"));
-            terrainImages[MapElement.FOREST.getValue() - 1] = ImageIO.read(new File("C:/Users/10107/Desktop/PDI-main/src/image/forest.png"));
-            terrainImages[MapElement.BRIDGE.getValue() - 1] = ImageIO.read(new File("C:/Users/10107/Desktop/PDI-main/src/image/bridge.png"));
-            terrainImages[MapElement.RIVER.getValue() - 1] = ImageIO.read(new File("C:/Users/10107/Desktop/PDI-main/src/image/river.png"));
-            terrainImages[MapElement.MOUNTAIN.getValue() - 1] = ImageIO.read(new File("C:/Users/10107/Desktop/PDI-main/src/image/mountain.png"));
-            terrainImages[MapElement.MARSHLAND.getValue() - 1] = ImageIO.read(new File("C:/Users/10107/Desktop/PDI-main/src/image/marshland.png"));
-            terrainImages[MapElement.TREASURE.getValue() - 1] = ImageIO.read(new File("C:/Users/10107/Desktop/PDI-main/src/image/treasure.png"));
+            playerImage = ImageIO.read(new File("src/image/character.png"));
+            terrainImages[MapElement.GRASS.getValue() - 1] = ImageIO.read(new File("src/image/grass.png"));
+            terrainImages[MapElement.FOREST.getValue() - 1] = ImageIO.read(new File("src/image/forest.png"));
+            terrainImages[MapElement.BRIDGE.getValue() - 1] = ImageIO.read(new File("src/image/bridge.png"));
+            terrainImages[MapElement.RIVER.getValue() - 1] = ImageIO.read(new File("src/image/river.png"));
+            terrainImages[MapElement.MOUNTAIN.getValue() - 1] = ImageIO.read(new File("src/image/mountain.png"));
+            terrainImages[MapElement.MARSHLAND.getValue() - 1] = ImageIO.read(new File("src/image/marshland.png"));
+            terrainImages[MapElement.TREASURE.getValue() - 1] = ImageIO.read(new File("src/image/treasure.png"));
         }
         
      // 假设你的地图的宽度为 mapWidth，高度为 mapHeight
@@ -104,7 +105,97 @@ public class Map extends JFrame {
                 }).start();
             }
         }
-        
+//        
+//        private void moveAdventurer(int index) {
+//            synchronized(this) {
+//                Point treasurePosition = findTreasurePosition();
+//                Point adventurer = adventurers[index];
+//                int tries = 0;
+//                boolean moveSuccessful = false; // 移动成功的标志
+//
+//                if (gameEnded || treasurePosition == null) {
+//                    return;
+//                }
+//
+//                String currentStrategy = GameSettings.getInstance().getCurrentStrategy();
+//
+//                Point newLocation;
+//                switch (currentStrategy) {
+//                    case "Radical":
+//                        newLocation = game.Strategy.moveTowardsTreasure(adventurer, treasurePosition);
+//                        break;
+//                    case "Conservative":
+//                        newLocation = game.Strategy.stayPut(adventurer);
+//                        break;
+//                    case "Random":
+//                        newLocation = game.Strategy.moveRandomly(adventurer);
+//                        break;
+//                    default:
+//                        newLocation = game.Strategy.moveTowardsTreasure(adventurer, treasurePosition);
+//                }
+//
+//                // 仅允许一步移动
+//                int deltaX = Integer.signum(newLocation.x - adventurer.x);
+//                int deltaY = Integer.signum(newLocation.y - adventurer.y);
+//
+//                int newX = adventurer.x + deltaX; // 限制一步移动
+//                int newY = adventurer.y + deltaY;
+//
+//                if (isValidMove(newX, newY) && !isOccupied(newX, newY)) {
+//                    moveSuccessful = true;
+//                } else {
+//                    // 如果直接移向目标失败，则尝试随机或其他预定逻辑
+//                    while (tries < 5 && !moveSuccessful) {
+//                        // 这里可以根据需要调整随机移动或者其他逻辑
+//                        tries++;
+//                    }
+//
+//                    if (!moveSuccessful) {
+//                        // 随机选择一个新的方向进行一步的移动
+//                        int[] directions = {0, 1, 2, 3};
+//                        Collections.shuffle(Arrays.asList(directions));
+//                        for (int dir : directions) {
+//                            newX = adventurer.x;
+//                            newY = adventurer.y;
+//                            switch (dir) {
+//                                case 0: newY--; break;
+//                                case 1: newY++; break;
+//                                case 2: newX--; break;
+//                                case 3: newX++; break;
+//                            }
+//                            if (isValidMove(newX, newY) && !isOccupied(newX, newY)) {
+//                                moveSuccessful = true;
+//                                break;
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                // 如果移动成功，更新位置
+//                if (moveSuccessful) {
+//                    // 检查新位置是否可用，如果不可用则等待
+//                    while (!isPositionAvailable(newX, newY)) {
+//                        try {
+//                            wait();
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//
+//                    System.out.println("Adventurer " + index + " moved to (" + newX + ", " + newY + ")");
+//
+//                    checkEncounterWithAnimals(newX, newY, index);
+//                    moveToNewPosition(index, newX, newY);
+//                    notifyAll();
+//
+//                    if (newX == treasurePosition.x && newY == treasurePosition.y) {
+//                        JOptionPane.showMessageDialog(this, "Congratulations! You found the treasure!");
+//                        gameEnded = true;
+//                    }
+//                }
+//            }
+//            repaint();
+//        }
         private void moveAdventurer(int index) {
             synchronized(this) {
                 Point treasurePosition = findTreasurePosition();
@@ -121,16 +212,47 @@ public class Map extends JFrame {
                 Point newLocation;
                 switch (currentStrategy) {
                     case "Radical":
-                        newLocation = game.Strategy.moveTowardsTreasure(adventurer, treasurePosition);
+                        newLocation = Strategy.moveTowardsTreasure(adventurer, treasurePosition);
                         break;
                     case "Conservative":
-                        newLocation = game.Strategy.stayPut(adventurer);
+                        newLocation = Strategy.stayPut(adventurer);
                         break;
                     case "Random":
-                        newLocation = game.Strategy.moveRandomly(adventurer);
+                        newLocation = Strategy.moveRandomly(adventurer);
                         break;
                     default:
-                        newLocation = game.Strategy.moveTowardsTreasure(adventurer, treasurePosition);
+                        newLocation = Strategy.moveTowardsTreasure(adventurer, treasurePosition);
+                }
+
+                // 检查新位置是否遇到了动物或地形障碍
+                boolean encounteredObstacle = false;
+                Point obstaclePosition = null;
+                // 此处需要根据游戏逻辑自行实现判断遇到动物或地形障碍的方法
+                // 这里假设有一个名为encounterObstacle的方法，用于判断是否遇到障碍物，并返回障碍物类型和位置信息
+                // 示例：encounterObstacle方法返回一个包含障碍物类型和位置信息的对象
+                EncounterResult encounterResult = encounterObstacle(newLocation);
+                if (encounterResult != null) {
+                    encounteredObstacle = true;
+                    obstaclePosition = encounterResult.getPosition();
+                }
+
+                if (encounteredObstacle) {
+                    // 根据遇到的动物或地形障碍，确定冒险者的下一步行动
+                    switch (encounterResult.getObstacleType()) {
+                        case "Bear":
+                            newLocation = Strategy.runAwayFromBear(adventurer, obstaclePosition, treasurePosition);
+                            break;
+                        case "Fox":
+                            newLocation = Strategy.avoidFoxes(adventurer, obstaclePosition, treasurePosition);
+                            break;
+                        case "Tree":
+                            newLocation = Strategy.changeDirectionAroundTree(adventurer, obstaclePosition, treasurePosition);
+                            break;
+                        case "Mountain":
+                            newLocation = Strategy.stopMovingAtMountain(adventurer, obstaclePosition, treasurePosition);
+                            break;
+                        // 可以根据需要继续添加其他障碍类型的处理逻辑
+                    }
                 }
 
                 // 仅允许一步移动
@@ -194,6 +316,41 @@ public class Map extends JFrame {
                 }
             }
             repaint();
+        }
+        private EncounterResult encounterObstacle(Point newPosition) {
+            // 假设随机生成的数值决定是否遇到障碍物
+            double randomValue = Math.random();
+            if (randomValue < 0.2) { // 20%的概率遇到动物或地形障碍
+                // 假设随机生成的数值决定遇到的障碍物类型
+                double obstacleTypeValue = Math.random();
+                if (obstacleTypeValue < 0.3) { // 30%的概率遇到熊
+                    return new EncounterResult("Bear", newPosition);
+                } else if (obstacleTypeValue < 0.6) { // 30%的概率遇到狐狸
+                    return new EncounterResult("Fox", newPosition);
+                } else if (obstacleTypeValue < 0.8) { // 20%的概率遇到树
+                    return new EncounterResult("Tree", newPosition);
+                } else { // 20%的概率遇到山
+                    return new EncounterResult("Mountain", newPosition);
+                }
+            }
+            return null; // 没有遇到障碍物
+        }
+        public class EncounterResult {
+            private String obstacleType; // 障碍物类型
+            private Point position; // 障碍物位置
+
+            public EncounterResult(String obstacleType, Point position) {
+                this.obstacleType = obstacleType;
+                this.position = position;
+            }
+
+            public String getObstacleType() {
+                return obstacleType;
+            }
+
+            public Point getPosition() {
+                return position;
+            }
         }
 
         
