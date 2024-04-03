@@ -62,14 +62,14 @@ public class Map extends JFrame {
         }
 
         private void loadImages() throws IOException {
-            playerImage = ImageIO.read(new File("src/image/character.png"));
-            terrainImages[MapElement.GRASS.getValue() - 1] = ImageIO.read(new File("src/image/grass.png"));
-            terrainImages[MapElement.FOREST.getValue() - 1] = ImageIO.read(new File("src/image/forest.png"));
-            terrainImages[MapElement.BRIDGE.getValue() - 1] = ImageIO.read(new File("src/image/bridge.png"));
-            terrainImages[MapElement.RIVER.getValue() - 1] = ImageIO.read(new File("src/image/river.png"));
-            terrainImages[MapElement.MOUNTAIN.getValue() - 1] = ImageIO.read(new File("src/image/mountain.png"));
-            terrainImages[MapElement.MARSHLAND.getValue() - 1] = ImageIO.read(new File("src/image/marshland.png"));
-            terrainImages[MapElement.TREASURE.getValue() - 1] = ImageIO.read(new File("src/image/treasure.png"));
+            playerImage = ImageIO.read(new File("C:/Users/10107/Desktop/PDI-main/src/image/character.png"));
+            terrainImages[MapElement.GRASS.getValue() - 1] = ImageIO.read(new File("C:/Users/10107/Desktop/PDI-main/src/image/grass.png"));
+            terrainImages[MapElement.FOREST.getValue() - 1] = ImageIO.read(new File("C:/Users/10107/Desktop/PDI-main/src/image/forest.png"));
+            terrainImages[MapElement.BRIDGE.getValue() - 1] = ImageIO.read(new File("C:/Users/10107/Desktop/PDI-main/src/image/bridge.png"));
+            terrainImages[MapElement.RIVER.getValue() - 1] = ImageIO.read(new File("C:/Users/10107/Desktop/PDI-main/src/image/river.png"));
+            terrainImages[MapElement.MOUNTAIN.getValue() - 1] = ImageIO.read(new File("C:/Users/10107/Desktop/PDI-main/src/image/mountain.png"));
+            terrainImages[MapElement.MARSHLAND.getValue() - 1] = ImageIO.read(new File("C:/Users/10107/Desktop/PDI-main/src/image/marshland.png"));
+            terrainImages[MapElement.TREASURE.getValue() - 1] = ImageIO.read(new File("C:/Users/10107/Desktop/PDI-main/src/image/treasure.png"));
         }
         
      // 假设你的地图的宽度为 mapWidth，高度为 mapHeight
@@ -104,99 +104,97 @@ public class Map extends JFrame {
                 }).start();
             }
         }
-//        
-//        private void moveAdventurer(int index) {
-//            synchronized(this) {
-//                Point treasurePosition = findTreasurePosition();
-//                Point adventurer = adventurers[index];
-//                int tries = 0;
-//                if (gameEnded || treasurePosition == null) {
-//                    return;
-//                }
-//
-//                // 获取当前策略
-//                String currentStrategy = GameSettings.getInstance().getCurrentStrategy();
-//
-//
-//                Point newLocation;
-//                switch (currentStrategy) {
-//                    case "Radical":
-//                        newLocation = game.Strategy.moveTowardsTreasure(adventurer, treasurePosition);
-//                        break;
-//                    case "Conservative":
-//                        newLocation = game.Strategy.stayPut(adventurer);
-//                        break;
-//                    case "Random":
-//                        newLocation = game.Strategy.moveRandomly(adventurer);
-//                        break;
-//                    default:
-//                        newLocation = game.Strategy.moveTowardsTreasure(adventurer, treasurePosition); // 基础的策略
-//                }
-//
-//                int newX = newLocation.x;
-//                int newY = newLocation.y;
-//                
-//                int deltaX = Integer.compare(newLocation.x, adventurer.x);
-//                int deltaY = Integer.compare(newLocation.y, adventurer.y);
-//                
-//                while (tries < 5) { // 在同一位置最多尝试5次
-//                    if (Math.random() < 0.5) {
-//                        newX += deltaX;
-//                        if (isValidMove(newX, newY) && !isOccupied(newX, newY)) {
-//                            break; // 移动成功，跳出循环
-//                        }
-//                        newX -= deltaX; // 移动失败，恢复位置
-//                    } else {
-//                        newY += deltaY;
-//                        if (isValidMove(newX, newY) && !isOccupied(newX, newY)) {
-//                            break; // 移动成功，跳出循环
-//                        }
-//                        newY -= deltaY; // 移动失败，恢复位置
-//                    }
-//                    tries++; // 增加尝试次数
-//                }
-//                // 如果尝试了三次仍然无法移动，则随机选择一个新的方向
-//                if (tries == 3) {
-//                    int[] directions = {0, 1, 2, 3}; // 0: 上, 1: 下, 2: 左, 3: 右
-//                    Collections.shuffle(Arrays.asList(directions)); // 随机打乱
-//                    for (int dir : directions) {
-//                        if (dir == 0) { // 上
-//                            newY = adventurer.y - 1;
-//                        } else if (dir == 1) { // 下
-//                            newY = adventurer.y + 1;
-//                        } else if (dir == 2) { // 左
-//                            newX = adventurer.x - 1;
-//                        } else { // 右
-//                            newX = adventurer.x + 1;
-//                        }
-//                        if (isValidMove(newX, newY) && !isOccupied(newX, newY)) {
-//                            break; // 跳出循环
-//                        }
-//                    }
-//                }
-//                
-//                
-//                // 检查新位置是否可用
-//                while (!isPositionAvailable(newX, newY)) {
-//                    try {
-//                        wait(); // 如果位置不可用，等待
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//
-//                checkEncounterWithAnimals(newX, newY, index);
-//                // 移动到新位置
-//                moveToNewPosition(index, newX, newY);
-//                notifyAll(); // 通知所有等待的线程位置可能已经变更
-//
-//                if (newX == treasurePosition.x && newY == treasurePosition.y) {
-//                    JOptionPane.showMessageDialog(this, "Congratulations! You found the treasure!");
-//                    gameEnded = true; // 游戏结束
-//                }
-//            }
-//            repaint();
-//        }
+        
+        private void moveAdventurer(int index) {
+            synchronized(this) {
+                Point treasurePosition = findTreasurePosition();
+                Point adventurer = adventurers[index];
+                int tries = 0;
+                boolean moveSuccessful = false; // 移动成功的标志
+
+                if (gameEnded || treasurePosition == null) {
+                    return;
+                }
+
+                String currentStrategy = GameSettings.getInstance().getCurrentStrategy();
+
+                Point newLocation;
+                switch (currentStrategy) {
+                    case "Radical":
+                        newLocation = game.Strategy.moveTowardsTreasure(adventurer, treasurePosition);
+                        break;
+                    case "Conservative":
+                        newLocation = game.Strategy.stayPut(adventurer);
+                        break;
+                    case "Random":
+                        newLocation = game.Strategy.moveRandomly(adventurer);
+                        break;
+                    default:
+                        newLocation = game.Strategy.moveTowardsTreasure(adventurer, treasurePosition);
+                }
+
+                // 仅允许一步移动
+                int deltaX = Integer.signum(newLocation.x - adventurer.x);
+                int deltaY = Integer.signum(newLocation.y - adventurer.y);
+
+                int newX = adventurer.x + deltaX; // 限制一步移动
+                int newY = adventurer.y + deltaY;
+
+                if (isValidMove(newX, newY) && !isOccupied(newX, newY)) {
+                    moveSuccessful = true;
+                } else {
+                    // 如果直接移向目标失败，则尝试随机或其他预定逻辑
+                    while (tries < 5 && !moveSuccessful) {
+                        // 这里可以根据需要调整随机移动或者其他逻辑
+                        tries++;
+                    }
+
+                    if (!moveSuccessful) {
+                        // 随机选择一个新的方向进行一步的移动
+                        int[] directions = {0, 1, 2, 3};
+                        Collections.shuffle(Arrays.asList(directions));
+                        for (int dir : directions) {
+                            newX = adventurer.x;
+                            newY = adventurer.y;
+                            switch (dir) {
+                                case 0: newY--; break;
+                                case 1: newY++; break;
+                                case 2: newX--; break;
+                                case 3: newX++; break;
+                            }
+                            if (isValidMove(newX, newY) && !isOccupied(newX, newY)) {
+                                moveSuccessful = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // 如果移动成功，更新位置
+                if (moveSuccessful) {
+                    // 检查新位置是否可用，如果不可用则等待
+                    while (!isPositionAvailable(newX, newY)) {
+                        try {
+                            wait();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    System.out.println("Adventurer " + index + " moved to (" + newX + ", " + newY + ")");
+
+                    checkEncounterWithAnimals(newX, newY, index);
+                    moveToNewPosition(index, newX, newY);
+                    notifyAll();
+
+                    if (newX == treasurePosition.x && newY == treasurePosition.y) {
+                        JOptionPane.showMessageDialog(this, "Congratulations! You found the treasure!");
+                        gameEnded = true;
+                    }
+                }
+            }
+            repaint();
+        }
 
         
         private void checkEncounterWithAnimals(int x, int y, int adventurerIndex) {
@@ -258,93 +256,101 @@ public class Map extends JFrame {
         }
 
         
+        // 尝试将探险者移动到新位置
         private synchronized void moveToNewPosition(int index, int newX, int newY) {
-            while (!isPositionAvailable(newX, newY) && !gameEnded) {
+            while (!isPositionAvailable(newX, newY)) {
                 try {
-                    wait(); // 等待位置变为可用或游戏结束
+                    wait(); // 等待位置变为可用
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-            // 如果游戏已经结束，则不再移动
-            if (!gameEnded) {
-                // 更新探险者位置
-                adventurers[index].setLocation(newX, newY);
-                notifyAll(); // 通知其他等待的线程检查位置状态
-            }
+            // 更新探险者位置
+            adventurers[index].setLocation(newX, newY);
+            notifyAll(); // 通知其他等待的线程检查位置状态
         }
-        private void moveAdventurer(int index) {
-            Point treasurePosition = findTreasurePosition(); // 获取宝藏位置
-            Point adventurer = adventurers[index];
-            int newX = adventurer.x, newY = adventurer.y;
-            int tries = 0; // 记录尝试移动的次数
-            if (gameEnded) {
-                return; // 如果游戏已经结束，则立即返回
-            }
-            if (treasurePosition != null) {
-                // 计算朝着宝藏方向的增量
-                int deltaX = Integer.compare(treasurePosition.x, adventurer.x);
-                int deltaY = Integer.compare(treasurePosition.y, adventurer.y);
-                // 尝试朝着宝藏方向移动
-                while (tries < 3) { // 在同一位置最多尝试三次
-                    if (Math.random() < 0.5) {
-                        newX += deltaX;
-                        if (isValidMove(newX, newY) && isPositionAvailable(newX, newY)) {
-                            break; // 移动成功，跳出循环
-                        }
-                        newX -= deltaX; // 移动失败，恢复位置
-                    } else {
-                        newY += deltaY;
-                        if (isValidMove(newX, newY) && isPositionAvailable(newX, newY)) {
-                            break; // 移动成功，跳出循环
-                        }
-                        newY -= deltaY; // 移动失败，恢复位置
-                    }
-                    tries++; // 增加尝试次数
-                }
-                // 如果尝试了三次仍然无法移动，则随机选择一个新的方向
-                if (tries == 3) {
-                    int[] directions = {0, 1, 2, 3}; // 0: 上, 1: 下, 2: 左, 3: 右
-                    Collections.shuffle(Arrays.asList(directions)); // 随机打乱
-                    for (int dir : directions) {
-                        if (dir == 0) { // 上
-                            newY = adventurer.y - 1;
-                        } else if (dir == 1) { // 下
-                            newY = adventurer.y + 1;
-                        } else if (dir == 2) { // 左
-                            newX = adventurer.x - 1;
-                        } else { // 右
-                            newX = adventurer.x + 1;
-                        }
-                        if (isValidMove(newX, newY) && isPositionAvailable(newX, newY)) {
-                            break; // 跳出循环
-                        }
-                    }
-                }
-                // 宝藏
-                if (newX == treasurePosition.x && newY == treasurePosition.y) {
-                    JOptionPane.showMessageDialog(this, "Congratulations! You found the treasure!");
-                    treasureFound(); // 调用宝藏找到的方法
-                    return; // 游戏结束
-                }
-                // 移动到新位置
-                moveToNewPosition(index, newX, newY);
-                // 打印冒险者的移动路径
-                System.out.println("adventurer " + index + " move to (" + newX + ", " + newY + ")");
-                
-                // 检查移动后是否遇到了动物
-                checkEncounterWithAnimals(newX, newY, index);
-            }
-            // 重新绘制地图
-            repaint();
-        }
+        
+//        private void moveAdventurer(int index) {
+//            Point treasurePosition = findTreasurePosition(); // 获取宝藏位置
+//            Point adventurer = adventurers[index];
+//            int newX = adventurer.x, newY = adventurer.y;
+//            int tries = 0; // 记录尝试移动的次数
+//            if (gameEnded) {
+//                return; // 如果游戏已经结束，则立即返回
+//            }
+//            if (treasurePosition != null) {
+//                // 计算朝着宝藏方向的增量
+//                int deltaX = Integer.compare(treasurePosition.x, adventurer.x);
+//                int deltaY = Integer.compare(treasurePosition.y, adventurer.y);
+//                // 尝试朝着宝藏方向移动
+//                while (tries < 3) { // 在同一位置最多尝试三次
+//                    if (Math.random() < 0.5) {
+//                        newX += deltaX;
+//                        if (isValidMove(newX, newY) && isPositionAvailable(newX, newY)) {
+//                            break; // 移动成功，跳出循环
+//                        }
+//                        newX -= deltaX; // 移动失败，恢复位置
+//                    } else {
+//                        newY += deltaY;
+//                        if (isValidMove(newX, newY) && isPositionAvailable(newX, newY)) {
+//                            break; // 移动成功，跳出循环
+//                        }
+//                        newY -= deltaY; // 移动失败，恢复位置
+//                    }
+//                    tries++; // 增加尝试次数
+//                }
+//                // 如果尝试了三次仍然无法移动，则随机选择一个新的方向
+//                if (tries == 3) {
+//                    int[] directions = {0, 1, 2, 3}; // 0: 上, 1: 下, 2: 左, 3: 右
+//                    Collections.shuffle(Arrays.asList(directions)); // 随机打乱
+//                    for (int dir : directions) {
+//                        if (dir == 0) { // 上
+//                            newY = adventurer.y - 1;
+//                        } else if (dir == 1) { // 下
+//                            newY = adventurer.y + 1;
+//                        } else if (dir == 2) { // 左
+//                            newX = adventurer.x - 1;
+//                        } else { // 右
+//                            newX = adventurer.x + 1;
+//                        }
+//                        if (isValidMove(newX, newY) && isPositionAvailable(newX, newY)) {
+//                            break; // 跳出循环
+//                        }
+//                    }
+//                }
+//                // 宝藏
+//                if (newX == treasurePosition.x && newY == treasurePosition.y) {
+//                    JOptionPane.showMessageDialog(this, "Congratulations! You found the treasure!");
+//                    treasureFound(); // 调用宝藏找到的方法
+//                    return; // 游戏结束
+//                }
+//                // 移动到新位置
+//                moveToNewPosition(index, newX, newY);
+//                // 打印冒险者的移动路径
+//                System.out.println("adventurer " + index + " move to (" + newX + ", " + newY + ")");
+//                
+//                // 检查移动后是否遇到了动物
+//                checkEncounterWithAnimals(newX, newY, index);
+//            }
+//            // 重新绘制地图
+//            repaint();
+//        }
+
         private synchronized void treasureFound() {
             gameEnded = true;
             notifyAll(); // 通知所有等待的线程
         }
         
 
-
+        private boolean isOccupied(int x, int y) {
+            for (Point adventurer : adventurers) {
+                int index = 0;
+				if (adventurer != adventurers[index] && adventurer.x == x && adventurer.y == y) {
+                    return true; // 目标位置已经被其他冒险者占据
+                }
+            }
+            return false;
+        }
 
         private boolean isValidMove(int x, int y) {
             if (x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_HEIGHT ||
