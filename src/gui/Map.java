@@ -63,14 +63,14 @@ public class Map extends JFrame {
         }
 
         private void loadImages() throws IOException {
-            playerImage = ImageIO.read(new File("src/image/character.png"));
-            terrainImages[MapElement.GRASS.getValue() - 1] = ImageIO.read(new File("src/image/grass.png"));
-            terrainImages[MapElement.FOREST.getValue() - 1] = ImageIO.read(new File("src/image/forest.png"));
-            terrainImages[MapElement.BRIDGE.getValue() - 1] = ImageIO.read(new File("src/image/bridge.png"));
-            terrainImages[MapElement.RIVER.getValue() - 1] = ImageIO.read(new File("src/image/river.png"));
-            terrainImages[MapElement.MOUNTAIN.getValue() - 1] = ImageIO.read(new File("src/image/mountain.png"));
-            terrainImages[MapElement.MARSHLAND.getValue() - 1] = ImageIO.read(new File("src/image/marshland.png"));
-            terrainImages[MapElement.TREASURE.getValue() - 1] = ImageIO.read(new File("src/image/treasure.png"));
+            playerImage = ImageIO.read(new File("C:/Users/10107/Desktop/PDI-main/src/image/character.png"));
+            terrainImages[MapElement.GRASS.getValue() - 1] = ImageIO.read(new File("C:/Users/10107/Desktop/PDI-main/src/image/grass.png"));
+            terrainImages[MapElement.FOREST.getValue() - 1] = ImageIO.read(new File("C:/Users/10107/Desktop/PDI-main/src/image/forest.png"));
+            terrainImages[MapElement.BRIDGE.getValue() - 1] = ImageIO.read(new File("C:/Users/10107/Desktop/PDI-main/src/image/bridge.png"));
+            terrainImages[MapElement.RIVER.getValue() - 1] = ImageIO.read(new File("C:/Users/10107/Desktop/PDI-main/src/image/river.png"));
+            terrainImages[MapElement.MOUNTAIN.getValue() - 1] = ImageIO.read(new File("C:/Users/10107/Desktop/PDI-main/src/image/mountain.png"));
+            terrainImages[MapElement.MARSHLAND.getValue() - 1] = ImageIO.read(new File("C:/Users/10107/Desktop/PDI-main/src/image/marshland.png"));
+            terrainImages[MapElement.TREASURE.getValue() - 1] = ImageIO.read(new File("C:/Users/10107/Desktop/PDI-main/src/image/treasure.png"));
         }
         
      // 假设你的地图的宽度为 mapWidth，高度为 mapHeight
@@ -95,9 +95,17 @@ public class Map extends JFrame {
                 final int index = i;
                 new Thread(() -> {
                     while (!gameEnded) {
+                        // 初始化当前游戏速度为全局设置值
+                        int currentSpeed = GameConfiguration.GAME_SPEED;
+
+                        // 如果当前冒险者处于河流或森林中，将速度调整为1.5倍
+                        if (adventurerIsInRiver(index) || adventurerIsInForest(index)) {
+                            currentSpeed = (int) (currentSpeed * 1.5);
+                        }
+
                         moveAdventurer(index);
                         try {
-                            Thread.sleep(GameConfiguration.GAME_SPEED); // 每个冒险者的移动间隔
+                            Thread.sleep(currentSpeed); // 使用调整后的游戏速度作为冒险者的移动间隔
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -105,6 +113,26 @@ public class Map extends JFrame {
                 }).start();
             }
         }
+
+        
+        private boolean adventurerIsInRiver(int index) {
+            if (index < 0 || index >= adventurers.length) {
+                return false; // Index out of bounds
+            }
+            Point adventurerPosition = adventurers[index];
+            // Check if the adventurer's current position corresponds to a river terrain
+            return maps[adventurerPosition.y][adventurerPosition.x] == MapElement.RIVER.getValue();
+        }
+
+        private boolean adventurerIsInForest(int index) {
+            if (index < 0 || index >= adventurers.length) {
+                return false; // Index out of bounds
+            }
+            Point adventurerPosition = adventurers[index];
+            // Check if the adventurer's current position corresponds to a forest terrain
+            return maps[adventurerPosition.y][adventurerPosition.x] == MapElement.FOREST.getValue();
+        }
+
 //        
 //        private void moveAdventurer(int index) {
 //            synchronized(this) {
@@ -357,25 +385,39 @@ public class Map extends JFrame {
         private void checkEncounterWithAnimals(int x, int y, int adventurerIndex) {
             Animal encounteredAnimal = findAnimalAtPosition(x, y);
             if (encounteredAnimal != null) {
-                // 假设TeamStatus类有一个方法可以获取指定索引的探险者，并且CharacterStatus有reduceHealth方法
                 CharacterStatus adventurer = TeamStatus.getMember(adventurerIndex);
-                adventurer.reduceHealth(30); // 探险者损失30点生命值
-                removeAnimal(encounteredAnimal); // 从地图上移除动物
-                teamStatusDisplay.updateDisplay();
+                int healthLost = 0;
+                String animalType = encounteredAnimal.getClass().getSimpleName(); // 获取动物的类名
+                
+                if (encounteredAnimal instanceof Bear) {
+                    healthLost = 20;
+                } else if (encounteredAnimal instanceof Tiger) {
+                    healthLost = 30;
+                } else if (encounteredAnimal instanceof Fox) {
+                    healthLost = 10;
+                } else if (encounteredAnimal instanceof Dragon) {
+                    healthLost = 60;
+                }
+                adventurer.reduceHealth(healthLost);
+                removeAnimal(encounteredAnimal); // 只负责移除动物，不处理日志输出
+
+                // 输出具体是哪位冒险者损失了生命值
+                System.out.printf("Adventurer %d killed %s! HP-%d\n", adventurerIndex + 1, animalType, healthLost);
+                
+                teamStatusDisplay.updateDisplay(); // 确保teamStatusDisplay也是可访问的
             }
         }
+
+
+
         
         private void removeAnimal(Animal animal) {
             if (animal instanceof Bear) {
-                bears.remove(animal);
-                System.out.println("kill Bear!");
-                
+                bears.remove(animal);                         
             } else if (animal instanceof Fox) {
                 foxes.remove(animal);
-                System.out.println("kill Fox!");
             } else if (animal instanceof Tiger) {
                 tigers.remove(animal);
-                System.out.println("kill tiger!");
             } else if (animal instanceof Dragon) {
                 dragon = null;
             }
