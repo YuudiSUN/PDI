@@ -327,6 +327,8 @@ public class Map extends JFrame {
                 }
                 // 更新冒险者位置
                 adventurer.setLocation(newX, newY);
+                // 打印冒险者的移动路径
+                System.out.println("adventurer " + index + " move to (" + newX + ", " + newY + ")");
             }
             synchronized(this) {
                 if (gameEnded) {
