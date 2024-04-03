@@ -256,26 +256,22 @@ public class Map extends JFrame {
             }
             return true; // 位置可用
         }
+
         
         // 尝试将探险者移动到新位置
-        private void moveToNewPosition(int index, int newX, int newY) {
-            synchronized(this) {
-                while (!isPositionAvailable(newX, newY)) {
-                    try {
-                        wait(); // 等待位置变为可用
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+        private synchronized void moveToNewPosition(int index, int newX, int newY) {
+            while (!isPositionAvailable(newX, newY)) {
+                try {
+                    wait(); // 等待位置变为可用
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                // 更新探险者位置
-                adventurers[index].setLocation(newX, newY);
-                notifyAll(); // 通知其他等待的线程检查位置状态
-                
             }
+            // 更新探险者位置
+            adventurers[index].setLocation(newX, newY);
+            notifyAll(); // 通知其他等待的线程检查位置状态
         }
         
-
-
         private void moveAdventurer(int index) {
             Point treasurePosition = findTreasurePosition(); // 获取宝藏位置
             Point adventurer = adventurers[index];
@@ -292,13 +288,13 @@ public class Map extends JFrame {
                 while (tries < 3) { // 在同一位置最多尝试三次
                     if (Math.random() < 0.5) {
                         newX += deltaX;
-                        if (isValidMove(newX, newY) && !isOccupied(newX, newY)) {
+                        if (isValidMove(newX, newY) && isPositionAvailable(newX, newY)) {
                             break; // 移动成功，跳出循环
                         }
                         newX -= deltaX; // 移动失败，恢复位置
                     } else {
                         newY += deltaY;
-                        if (isValidMove(newX, newY) && !isOccupied(newX, newY)) {
+                        if (isValidMove(newX, newY) && isPositionAvailable(newX, newY)) {
                             break; // 移动成功，跳出循环
                         }
                         newY -= deltaY; // 移动失败，恢复位置
@@ -319,7 +315,7 @@ public class Map extends JFrame {
                         } else { // 右
                             newX = adventurer.x + 1;
                         }
-                        if (isValidMove(newX, newY) && !isOccupied(newX, newY)) {
+                        if (isValidMove(newX, newY) && isPositionAvailable(newX, newY)) {
                             break; // 跳出循环
                         }
                     }
@@ -327,20 +323,16 @@ public class Map extends JFrame {
                 // 宝藏
                 if (newX == treasurePosition.x && newY == treasurePosition.y) {
                     JOptionPane.showMessageDialog(this, "Congratulations! You found the treasure!");
-                    gameEnded = true; // 游戏结束
+                    treasureFound(); // 调用宝藏找到的方法
+                    return; // 游戏结束
                 }
-                // 更新冒险者位置
-                adventurer.setLocation(newX, newY);
+                // 移动到新位置
+                moveToNewPosition(index, newX, newY);
                 // 打印冒险者的移动路径
                 System.out.println("adventurer " + index + " move to (" + newX + ", " + newY + ")");
                 
                 // 检查移动后是否遇到了动物
                 checkEncounterWithAnimals(newX, newY, index);
-            }
-            synchronized(this) {
-                if (gameEnded) {
-                    return; // 如果游戏已经结束，停止移动
-                }
             }
             // 重新绘制地图
             repaint();
